@@ -1,6 +1,8 @@
 package org.soraworld.csitem;
 
+import com.google.inject.Inject;
 import org.soraworld.csitem.command.CommandCustomItem;
+import org.soraworld.csitem.data.ItemAttrib;
 import org.soraworld.csitem.listener.EventListener;
 import org.soraworld.csitem.manager.PluginManager;
 import org.soraworld.violet.Violet;
@@ -8,12 +10,15 @@ import org.soraworld.violet.command.SpongeBaseSubs;
 import org.soraworld.violet.command.SpongeCommand;
 import org.soraworld.violet.manager.SpongeManager;
 import org.soraworld.violet.plugin.SpongePlugin;
+import org.spongepowered.api.data.DataRegistration;
+import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -37,22 +42,36 @@ public class CustomItem extends SpongePlugin {
     public static final String PLUGIN_NAME = "CustomItem";
     public static final String PLUGIN_VERSION = "1.0.0";
 
+    @Inject
+    private PluginContainer container;
+
     public String assetsId() {
         return "csitem";
     }
 
+    @Listener
     public void onPreInit(GamePreInitializationEvent event) {
         super.onPreInit(event);
     }
 
+    @Listener
     public void onInit(GameInitializationEvent event) {
         super.onInit(event);
+        DataRegistration.builder()
+                .dataClass(ItemAttrib.class)
+                .immutableClass(ItemAttrib.Immutable.class)
+                .builder(new ItemAttrib.Builder())
+                .dataName("ItemAttrib Data")
+                .manipulatorId("attrib")
+                .buildAndRegister(this.container);
     }
 
+    @Listener
     public void onStarting(GameStartingServerEvent event) {
         super.onStarting(event);
     }
 
+    @Listener
     public void onDisable(GameStoppingServerEvent event) {
         super.onDisable(event);
     }
