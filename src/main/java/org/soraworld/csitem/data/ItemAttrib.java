@@ -1,5 +1,6 @@
 package org.soraworld.csitem.data;
 
+import org.soraworld.hocon.node.Serializable;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.DataQuery;
@@ -17,32 +18,56 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class ItemAttrib implements DataManipulator<ItemAttrib, ItemAttrib.Immutable> {
+@Serializable
+public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, ItemAttrib.Immutable> {
 
     public static final DataQuery NAME = DataQuery.of("name");
-
-    public String name = "def name";
-
-    public ItemAttrib(String name) {
-        this.name = name;
-    }
+    public static final DataQuery ATTACK = DataQuery.of("attack");
+    public static final DataQuery MANA_ATTACK = DataQuery.of("manaAttack");
+    public static final DataQuery CRIT_CHANCE = DataQuery.of("critChance");
+    public static final DataQuery CRIT_DAMAGE = DataQuery.of("critDamage");
+    public static final DataQuery WALK_SPEED = DataQuery.of("walkSpeed");
+    public static final DataQuery BLOCK_CHANCE = DataQuery.of("blockChance");
+    public static final DataQuery DODGE_CHANCE = DataQuery.of("dodgeChance");
+    public static final DataQuery SUCK_RATIO = DataQuery.of("suckRatio");
+    public static final DataQuery FIRE_CHANCE = DataQuery.of("fireChance");
+    public static final DataQuery FREEZE_CHANCE = DataQuery.of("freezeChance");
+    public static final DataQuery POISON_CHANCE = DataQuery.of("poisonChance");
+    public static final DataQuery BLOOD_CHANCE = DataQuery.of("bloodChance");
 
     public ItemAttrib() {
     }
 
+    public ItemAttrib(Attrib attrib) {
+        super(attrib);
+    }
+
     public String toString() {
-        return "[attrib - name : " + name + " ]";
+        return "{ItemAttrib : " + name + "}";
     }
 
     public Optional<ItemAttrib> fill(DataHolder dataHolder, MergeFunction overlap) {
         ItemAttrib attrib = overlap.merge(this, dataHolder.get(ItemAttrib.class).orElse(null));
-        this.name = attrib.name;
+        copy(attrib);
         return Optional.of(this);
     }
 
-    public Optional<ItemAttrib> from(DataContainer container) {
-        if (container.contains(NAME)) {
-            container.getString(NAME).ifPresent(s -> name = s);
+    public Optional<ItemAttrib> from(DataContainer con) {
+        if (con.contains(NAME)) {
+            reset();
+            con.getString(NAME).ifPresent(s -> name = s);
+            con.getInt(ATTACK).ifPresent(i -> attack = i);
+            con.getInt(MANA_ATTACK).ifPresent(i -> manaAttack = i);
+            con.getFloat(CRIT_CHANCE).ifPresent(f -> critChance = f);
+            con.getFloat(CRIT_DAMAGE).ifPresent(f -> critDamage = f);
+            con.getFloat(WALK_SPEED).ifPresent(f -> walkSpeed = f);
+            con.getFloat(BLOCK_CHANCE).ifPresent(f -> blockChance = f);
+            con.getFloat(DODGE_CHANCE).ifPresent(f -> dodgeChance = f);
+            con.getFloat(SUCK_RATIO).ifPresent(f -> suckRatio = f);
+            con.getFloat(FIRE_CHANCE).ifPresent(f -> fireChance = f);
+            con.getFloat(FREEZE_CHANCE).ifPresent(f -> freezeChance = f);
+            con.getFloat(POISON_CHANCE).ifPresent(f -> poisonChance = f);
+            con.getFloat(BLOOD_CHANCE).ifPresent(f -> bloodChance = f);
             return Optional.of(this);
         } else return Optional.empty();
     }
@@ -64,7 +89,7 @@ public class ItemAttrib implements DataManipulator<ItemAttrib, ItemAttrib.Immuta
     }
 
     public ItemAttrib copy() {
-        return new ItemAttrib(name);
+        return new ItemAttrib(this);
     }
 
     public Set<Key<?>> getKeys() {
@@ -76,7 +101,7 @@ public class ItemAttrib implements DataManipulator<ItemAttrib, ItemAttrib.Immuta
     }
 
     public Immutable asImmutable() {
-        return new Immutable(name);
+        return new Immutable(this);
     }
 
     public int getContentVersion() {
@@ -85,21 +110,28 @@ public class ItemAttrib implements DataManipulator<ItemAttrib, ItemAttrib.Immuta
 
     public DataContainer toContainer() {
         return DataContainer.createNew()
-                .set(NAME, name);
+                .set(NAME, name)
+                .set(ATTACK, attack)
+                .set(MANA_ATTACK, manaAttack)
+                .set(CRIT_CHANCE, critChance)
+                .set(CRIT_DAMAGE, critDamage)
+                .set(WALK_SPEED, walkSpeed)
+                .set(BLOCK_CHANCE, blockChance)
+                .set(DODGE_CHANCE, dodgeChance)
+                .set(SUCK_RATIO, suckRatio)
+                .set(FIRE_CHANCE, fireChance)
+                .set(FREEZE_CHANCE, freezeChance)
+                .set(POISON_CHANCE, poisonChance)
+                .set(BLOOD_CHANCE, bloodChance);
     }
 
-    public static class Immutable implements ImmutableDataManipulator<Immutable, ItemAttrib> {
-        public String name = "def im name";
-
-        public Immutable() {
-        }
-
-        public Immutable(String name) {
-            this.name = name;
+    public static class Immutable extends Attrib implements ImmutableDataManipulator<Immutable, ItemAttrib> {
+        public Immutable(Attrib attrib) {
+            super(attrib);
         }
 
         public ItemAttrib asMutable() {
-            return new ItemAttrib(name);
+            return new ItemAttrib(this);
         }
 
         public int getContentVersion() {
@@ -107,8 +139,7 @@ public class ItemAttrib implements DataManipulator<ItemAttrib, ItemAttrib.Immuta
         }
 
         public DataContainer toContainer() {
-            return DataContainer.createNew()
-                    .set(NAME, name);
+            return asMutable().toContainer();
         }
 
         public <E> Optional<E> get(Key<? extends BaseValue<E>> key) {
@@ -141,10 +172,22 @@ public class ItemAttrib implements DataManipulator<ItemAttrib, ItemAttrib.Immuta
             return create().fill(dataHolder);
         }
 
-        public Optional<ItemAttrib> build(DataView container) throws InvalidDataException {
-            if (container.contains(NAME)) {
+        public Optional<ItemAttrib> build(DataView con) throws InvalidDataException {
+            if (con.contains(NAME)) {
                 ItemAttrib attrib = new ItemAttrib();
-                container.getString(NAME).ifPresent(s -> attrib.name = s);
+                con.getString(NAME).ifPresent(s -> attrib.name = s);
+                con.getInt(ATTACK).ifPresent(i -> attrib.attack = i);
+                con.getInt(MANA_ATTACK).ifPresent(i -> attrib.manaAttack = i);
+                con.getFloat(CRIT_CHANCE).ifPresent(f -> attrib.critChance = f);
+                con.getFloat(CRIT_DAMAGE).ifPresent(f -> attrib.critDamage = f);
+                con.getFloat(WALK_SPEED).ifPresent(f -> attrib.walkSpeed = f);
+                con.getFloat(BLOCK_CHANCE).ifPresent(f -> attrib.blockChance = f);
+                con.getFloat(DODGE_CHANCE).ifPresent(f -> attrib.dodgeChance = f);
+                con.getFloat(SUCK_RATIO).ifPresent(f -> attrib.suckRatio = f);
+                con.getFloat(FIRE_CHANCE).ifPresent(f -> attrib.fireChance = f);
+                con.getFloat(FREEZE_CHANCE).ifPresent(f -> attrib.freezeChance = f);
+                con.getFloat(POISON_CHANCE).ifPresent(f -> attrib.poisonChance = f);
+                con.getFloat(BLOOD_CHANCE).ifPresent(f -> attrib.bloodChance = f);
                 return Optional.of(attrib);
             } else return Optional.empty();
         }
