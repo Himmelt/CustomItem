@@ -13,9 +13,6 @@ import org.soraworld.violet.plugin.SpongePlugin;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
-import org.spongepowered.api.event.game.state.GameStartingServerEvent;
-import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -43,15 +40,10 @@ public class CustomItem extends SpongePlugin {
     public static final String PLUGIN_VERSION = "1.0.0";
 
     @Inject
-    private PluginContainer container;
+    private PluginContainer pluginContainer;
 
     public String assetsId() {
         return "csitem";
-    }
-
-    @Listener
-    public void onPreInit(GamePreInitializationEvent event) {
-        super.onPreInit(event);
     }
 
     @Listener
@@ -63,17 +55,7 @@ public class CustomItem extends SpongePlugin {
                 .builder(new ItemAttrib.Builder())
                 .dataName("ItemAttrib Data")
                 .manipulatorId("attrib")
-                .buildAndRegister(this.container);
-    }
-
-    @Listener
-    public void onStarting(GameStartingServerEvent event) {
-        super.onStarting(event);
-    }
-
-    @Listener
-    public void onDisable(GameStoppingServerEvent event) {
-        super.onDisable(event);
+                .buildAndRegister(this.pluginContainer);
     }
 
     protected SpongeManager registerManager(Path path) {
