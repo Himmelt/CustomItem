@@ -39,6 +39,7 @@ public final class CommandCustomItem {
                 attrib -> attrib.attack
         );
     }
+
     @Sub(path = "manattack", perm = "admin", onlyPlayer = true, usage = "/csi manattack [damage]")
     public static void manaAttack(SpongeCommand self, CommandSource sender, Args args) {
         getSetInt(
@@ -50,6 +51,7 @@ public final class CommandCustomItem {
                 attrib -> attrib.manaAttack
         );
     }
+
     @Sub(path = "critchance", perm = "admin", onlyPlayer = true, usage = "/csi critchance [chance%]")
     public static void critChance(SpongeCommand self, CommandSource sender, Args args) {
         getSetInt(
@@ -57,10 +59,11 @@ public final class CommandCustomItem {
                 (Player) sender,
                 args, "CritChance",
                 0, 100,
-                (attrib, value) -> attrib.critChance = value/100.0F,
-                attrib -> (int)(attrib.critChance*100)
+                (attrib, value) -> attrib.critChance = value / 100.0F,
+                attrib -> (int) (attrib.critChance * 100)
         );
     }
+
     @Sub(path = "critdamage", perm = "admin", onlyPlayer = true, usage = "/csi critdamage [damage]")
     public static void critDamage(SpongeCommand self, CommandSource sender, Args args) {
         getSetFloat(
@@ -72,6 +75,7 @@ public final class CommandCustomItem {
                 attrib -> attrib.critDamage
         );
     }
+
     /**
      * 行走速度
      * 建议使用位置：全部
@@ -87,83 +91,91 @@ public final class CommandCustomItem {
                 attrib -> attrib.walkspeed
         );
     }
-    @Sub( perm = "admin", onlyPlayer = true, usage = "/csi block [chance%]")
+
+    @Sub(perm = "admin", onlyPlayer = true, usage = "/csi block [chance%]")
     public static void block(SpongeCommand self, CommandSource sender, Args args) {
         getSetInt(
                 (AttribManager) self.manager,
                 (Player) sender,
                 args, "BlockChance",
                 0, 100,
-                (attrib, value) -> attrib.blockChance = value/100.0F,
-                attrib -> (int)(attrib.blockChance*100)
+                (attrib, value) -> attrib.blockChance = value / 100.0F,
+                attrib -> (int) (attrib.blockChance * 100)
         );
     }
-    @Sub( perm = "admin", onlyPlayer = true, usage = "/csi dodge [chance%]")
+
+    @Sub(perm = "admin", onlyPlayer = true, usage = "/csi dodge [chance%]")
     public static void dodge(SpongeCommand self, CommandSource sender, Args args) {
         getSetInt(
                 (AttribManager) self.manager,
                 (Player) sender,
                 args, "DodgeChance",
                 0, 100,
-                (attrib, value) -> attrib.dodgeChance = value/100.0F,
-                attrib -> (int)(attrib.dodgeChance*100)
+                (attrib, value) -> attrib.dodgeChance = value / 100.0F,
+                attrib -> (int) (attrib.dodgeChance * 100)
         );
     }
-    @Sub( perm = "admin", onlyPlayer = true, usage = "/csi suck [ratio%]")
+
+    @Sub(perm = "admin", onlyPlayer = true, usage = "/csi suck [ratio%]")
     public static void suck(SpongeCommand self, CommandSource sender, Args args) {
         getSetInt(
                 (AttribManager) self.manager,
                 (Player) sender,
                 args, "SuckRatio",
                 0, Integer.MAX_VALUE,
-                (attrib, value) -> attrib.suckRatio = value/100.0F,
-                attrib -> (int)(attrib.suckRatio*100)
+                (attrib, value) -> attrib.suckRatio = value / 100.0F,
+                attrib -> (int) (attrib.suckRatio * 100)
         );
     }
-    @Sub( perm = "admin", onlyPlayer = true, usage = "/csi fire [chance%]")
+
+    @Sub(perm = "admin", onlyPlayer = true, usage = "/csi fire [chance%]")
     public static void fire(SpongeCommand self, CommandSource sender, Args args) {
         getSetInt(
                 (AttribManager) self.manager,
                 (Player) sender,
                 args, "FireChance",
                 0, 100,
-                (attrib, value) -> attrib.fireChance = value/100.0F,
-                attrib -> (int)(attrib.fireChance*100)
+                (attrib, value) -> attrib.fireChance = value / 100.0F,
+                attrib -> (int) (attrib.fireChance * 100)
         );
     }
-    @Sub( perm = "admin", onlyPlayer = true, usage = "/csi freeze [chance%]")
+
+    @Sub(perm = "admin", onlyPlayer = true, usage = "/csi freeze [chance%]")
     public static void freeze(SpongeCommand self, CommandSource sender, Args args) {
         getSetInt(
                 (AttribManager) self.manager,
                 (Player) sender,
                 args, "FreezeChance",
                 0, 100,
-                (attrib, value) -> attrib.freezeChance = value/100.0F,
-                attrib -> (int)(attrib.freezeChance*100)
+                (attrib, value) -> attrib.freezeChance = value / 100.0F,
+                attrib -> (int) (attrib.freezeChance * 100)
         );
     }
-    @Sub( perm = "admin", onlyPlayer = true, usage = "/csi poison [chance%]")
+
+    @Sub(perm = "admin", onlyPlayer = true, usage = "/csi poison [chance%]")
     public static void poison(SpongeCommand self, CommandSource sender, Args args) {
         getSetInt(
                 (AttribManager) self.manager,
                 (Player) sender,
                 args, "PoisonChance",
                 0, 100,
-                (attrib, value) -> attrib.poisonChance = value/100.0F,
-                attrib -> (int)(attrib.poisonChance*100)
+                (attrib, value) -> attrib.poisonChance = value / 100.0F,
+                attrib -> (int) (attrib.poisonChance * 100)
         );
     }
-    @Sub( perm = "admin", onlyPlayer = true, usage = "/csi blood [chance%]")
+
+    @Sub(perm = "admin", onlyPlayer = true, usage = "/csi blood [chance%]")
     public static void blood(SpongeCommand self, CommandSource sender, Args args) {
         getSetInt(
                 (AttribManager) self.manager,
                 (Player) sender,
                 args, "BloodChance",
                 0, 100,
-                (attrib, value) -> attrib.bloodChance = value/100.0F,
-                attrib -> (int)(attrib.bloodChance*100)
+                (attrib, value) -> attrib.bloodChance = value / 100.0F,
+                attrib -> (int) (attrib.bloodChance * 100)
         );
     }
+
     private static void getSetInt(AttribManager manager, Player player, Args args, String Name, int min, int max, BiConsumer<ItemAttrib, Integer> consumer, Function<ItemAttrib, Integer> fun) {
         player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
             // TODO check empty slot air ?
