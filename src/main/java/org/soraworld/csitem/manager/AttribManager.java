@@ -1,16 +1,20 @@
 package org.soraworld.csitem.manager;
 
 import org.soraworld.csitem.data.Attrib;
+import org.soraworld.csitem.task.PlayerTask;
 import org.soraworld.hocon.node.FileNode;
 import org.soraworld.hocon.node.Setting;
 import org.soraworld.violet.manager.SpongeManager;
 import org.soraworld.violet.plugin.SpongePlugin;
 import org.soraworld.violet.util.ChatColor;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.scheduler.Task;
 
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.soraworld.csitem.CustomItem.PLUGIN_ID;
 import static org.soraworld.csitem.data.Attrib.deserialize;
 import static org.soraworld.csitem.data.Attrib.serialize;
 
@@ -18,6 +22,8 @@ public class AttribManager extends SpongeManager {
 
     @Setting(comment = "comment.firstGlobal")
     private boolean firstGlobal = true;
+    @Setting(comment = "comment.updateTicks")
+    private byte updateTicks = 10;
 
     private final Path itemsFile;
     private static HashMap<String, Integer> names = new HashMap<>();
@@ -77,4 +83,14 @@ public class AttribManager extends SpongeManager {
             e.printStackTrace();
         }
     }
+
+    public void createPlayerTask(Player player) {
+        Task.builder()
+                .execute(new PlayerTask(player))
+                .delayTicks(updateTicks)
+                .intervalTicks(updateTicks)
+                .name(PLUGIN_ID + "-" + player.getName())
+                .submit(plugin);
+    }
+
 }

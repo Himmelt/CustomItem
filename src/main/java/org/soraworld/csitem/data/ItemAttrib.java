@@ -42,10 +42,6 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
         super(attrib);
     }
 
-    public String toString() {
-        return "{ItemAttrib : " + name + "}";
-    }
-
     public Optional<ItemAttrib> fill(DataHolder dataHolder, MergeFunction overlap) {
         ItemAttrib attrib = overlap.merge(this, dataHolder.get(ItemAttrib.class).orElse(null));
         copy(attrib);

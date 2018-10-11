@@ -8,6 +8,7 @@ import org.soraworld.violet.command.Sub;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -22,8 +23,10 @@ public final class CommandCustomItem {
                 stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
                     if (args.notEmpty()) attrib.name = args.first();
                     stack.offer(attrib);
+                    player.sendMessage(Text.of(attrib));
+                    player.sendMessage(Text.of("content-version:" + attrib.getContentVersion()));
+                    player.setItemInHand(HandTypes.MAIN_HAND, stack);
                 });
-                player.setItemInHand(HandTypes.MAIN_HAND, stack);
             });
         }
     }
@@ -185,6 +188,7 @@ public final class CommandCustomItem {
                         int value = Integer.valueOf(args.first());
                         value = value < min ? min : value > max ? max : value;
                         consumer.accept(attrib, value);
+                        stack.offer(attrib);
                         manager.sendKey(player, "set" + Name, value);
                         player.setItemInHand(HandTypes.MAIN_HAND, stack);
                     } catch (NumberFormatException ignored) {
@@ -208,6 +212,7 @@ public final class CommandCustomItem {
                         float value = Float.valueOf(args.first());
                         value = value < min ? min : value > max ? max : value;
                         consumer.accept(attrib, value);
+                        stack.offer(attrib);
                         manager.sendKey(player, "set" + Name, value);
                         player.setItemInHand(HandTypes.MAIN_HAND, stack);
                     } catch (NumberFormatException ignored) {

@@ -45,6 +45,7 @@ public class Attrib {
 
     public void copy(Attrib other) {
         if (other != null) {
+            name = other.name;
             attack = other.attack;
             manaAttack = other.manaAttack;
             critChance = other.critChance;
@@ -61,6 +62,7 @@ public class Attrib {
     }
 
     public void reset() {
+        name = "";
         attack = 0;
         manaAttack = 0;
         critChance = 0;
@@ -73,6 +75,10 @@ public class Attrib {
         freezeChance = 0;
         poisonChance = 0;
         bloodChance = 0;
+    }
+
+    public String toString() {
+        return "{name : " + name + ",attack:" + attack + ",walkspeed:" + walkspeed + "}";
     }
 
     public static Attrib deserialize(Node node, int id) {
