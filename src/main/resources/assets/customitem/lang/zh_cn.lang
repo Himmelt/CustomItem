@@ -3,4 +3,6 @@
 
 chatHead = "[自定义物品] "
 
-comment {}
+comment {
+  firstGlobal = "当全局属性存在时, 优先使用全局属性."
+}

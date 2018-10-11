@@ -3,7 +3,7 @@ package org.soraworld.csitem;
 import org.soraworld.csitem.command.CommandCustomItem;
 import org.soraworld.csitem.data.ItemAttrib;
 import org.soraworld.csitem.listener.EventListener;
-import org.soraworld.csitem.manager.PluginManager;
+import org.soraworld.csitem.manager.AttribManager;
 import org.soraworld.violet.Violet;
 import org.soraworld.violet.command.SpongeBaseSubs;
 import org.soraworld.violet.command.SpongeCommand;
@@ -50,13 +50,13 @@ public class CustomItem extends SpongePlugin {
     }
 
     protected SpongeManager registerManager(Path path) {
-        return new PluginManager(this, path);
+        return new AttribManager(this, path);
     }
 
     protected List<Object> registerListeners() {
         ArrayList<Object> listeners = new ArrayList<>();
-        if (manager instanceof PluginManager) {
-            PluginManager manager = (PluginManager) this.manager;
+        if (manager instanceof AttribManager) {
+            AttribManager manager = (AttribManager) this.manager;
             listeners.add(new EventListener(manager));
         }
         return listeners;

@@ -3,4 +3,6 @@
 
 chatHead = "[CustomItem] "
 
-comment {}
+comment {
+  firstGlobal = "First use global attributes."
+}

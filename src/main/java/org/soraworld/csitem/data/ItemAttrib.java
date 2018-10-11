@@ -60,7 +60,7 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
             con.getInt(MANA_ATTACK).ifPresent(i -> manaAttack = i);
             con.getFloat(CRIT_CHANCE).ifPresent(f -> critChance = f);
             con.getFloat(CRIT_DAMAGE).ifPresent(f -> critDamage = f);
-            con.getFloat(WALK_SPEED).ifPresent(f -> walkSpeed = f);
+            con.getFloat(WALK_SPEED).ifPresent(f -> walkspeed = f);
             con.getFloat(BLOCK_CHANCE).ifPresent(f -> blockChance = f);
             con.getFloat(DODGE_CHANCE).ifPresent(f -> dodgeChance = f);
             con.getFloat(SUCK_RATIO).ifPresent(f -> suckRatio = f);
@@ -115,7 +115,7 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
                 .set(MANA_ATTACK, manaAttack)
                 .set(CRIT_CHANCE, critChance)
                 .set(CRIT_DAMAGE, critDamage)
-                .set(WALK_SPEED, walkSpeed)
+                .set(WALK_SPEED, walkspeed)
                 .set(BLOCK_CHANCE, blockChance)
                 .set(DODGE_CHANCE, dodgeChance)
                 .set(SUCK_RATIO, suckRatio)
@@ -180,7 +180,7 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
                 con.getInt(MANA_ATTACK).ifPresent(i -> attrib.manaAttack = i);
                 con.getFloat(CRIT_CHANCE).ifPresent(f -> attrib.critChance = f);
                 con.getFloat(CRIT_DAMAGE).ifPresent(f -> attrib.critDamage = f);
-                con.getFloat(WALK_SPEED).ifPresent(f -> attrib.walkSpeed = f);
+                con.getFloat(WALK_SPEED).ifPresent(f -> attrib.walkspeed = f);
                 con.getFloat(BLOCK_CHANCE).ifPresent(f -> attrib.blockChance = f);
                 con.getFloat(DODGE_CHANCE).ifPresent(f -> attrib.dodgeChance = f);
                 con.getFloat(SUCK_RATIO).ifPresent(f -> attrib.suckRatio = f);

@@ -1,6 +1,6 @@
 package org.soraworld.csitem.listener;
 
-import org.soraworld.csitem.manager.PluginManager;
+import org.soraworld.csitem.manager.AttribManager;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.AttackEntityEvent;
@@ -9,9 +9,9 @@ import org.spongepowered.api.event.filter.cause.First;
 
 public class EventListener {
 
-    private final PluginManager manager;
+    private final AttribManager manager;
 
-    public EventListener(PluginManager manager) {
+    public EventListener(AttribManager manager) {
         this.manager = manager;
     }
 
