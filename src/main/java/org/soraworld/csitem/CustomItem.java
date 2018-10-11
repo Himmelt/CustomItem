@@ -1,6 +1,5 @@
 package org.soraworld.csitem;
 
-import com.google.inject.Inject;
 import org.soraworld.csitem.command.CommandCustomItem;
 import org.soraworld.csitem.data.ItemAttrib;
 import org.soraworld.csitem.listener.EventListener;
@@ -15,7 +14,6 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.plugin.PluginContainer;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -39,13 +37,6 @@ public class CustomItem extends SpongePlugin {
     public static final String PLUGIN_NAME = "CustomItem";
     public static final String PLUGIN_VERSION = "1.0.0";
 
-    @Inject
-    private PluginContainer pluginContainer;
-
-    public String assetsId() {
-        return "csitem";
-    }
-
     @Listener
     public void onInit(GameInitializationEvent event) {
         super.onInit(event);
@@ -55,7 +46,7 @@ public class CustomItem extends SpongePlugin {
                 .builder(new ItemAttrib.Builder())
                 .dataName("ItemAttrib Data")
                 .manipulatorId("attrib")
-                .buildAndRegister(this.pluginContainer);
+                .buildAndRegister(container);
     }
 
     protected SpongeManager registerManager(Path path) {
