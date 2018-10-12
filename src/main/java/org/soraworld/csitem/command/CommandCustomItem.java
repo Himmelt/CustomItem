@@ -31,6 +31,18 @@ public final class CommandCustomItem {
         }
     }
 
+    @Sub(perm = "admin", onlyPlayer = true, usage = "/csi global [id]")
+    public static void global(SpongeCommand self, CommandSource sender, Args args) {
+        getSetInt(
+                (AttribManager) self.manager,
+                (Player) sender,
+                args, "Attack",
+                0, Integer.MAX_VALUE,
+                (attrib, value) -> attrib.globalId = value,
+                attrib -> attrib.globalId
+        );
+    }
+
     @Sub(perm = "admin", onlyPlayer = true, usage = "/csi attack [damage]")
     public static void attack(SpongeCommand self, CommandSource sender, Args args) {
         getSetInt(

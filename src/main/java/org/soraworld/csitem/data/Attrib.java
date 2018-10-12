@@ -44,25 +44,31 @@ public class Attrib {
         copy(other);
     }
 
-    public void copy(Attrib other) {
-        if (other != null) {
-            name = other.name;
-            attack = other.attack;
-            manaAttack = other.manaAttack;
-            critChance = other.critChance;
-            critDamage = other.critDamage;
-            walkspeed = other.walkspeed;
-            blockChance = other.blockChance;
-            dodgeChance = other.dodgeChance;
-            suckRatio = other.suckRatio;
-            fireChance = other.fireChance;
-            freezeChance = other.freezeChance;
-            poisonChance = other.poisonChance;
-            bloodChance = other.bloodChance;
+    public void copy(Attrib old) {
+        if (old != null) {
+            globalId = old.globalId;
+            active = old.active;
+
+            name = old.name;
+            attack = old.attack;
+            manaAttack = old.manaAttack;
+            critChance = old.critChance;
+            critDamage = old.critDamage;
+            walkspeed = old.walkspeed;
+            blockChance = old.blockChance;
+            dodgeChance = old.dodgeChance;
+            suckRatio = old.suckRatio;
+            fireChance = old.fireChance;
+            freezeChance = old.freezeChance;
+            poisonChance = old.poisonChance;
+            bloodChance = old.bloodChance;
         } else reset();
     }
 
     public void reset() {
+        globalId = -1;
+        active = false;
+
         name = "";
         attack = 0;
         manaAttack = 0;
@@ -79,7 +85,7 @@ public class Attrib {
     }
 
     public String toString() {
-        return "{name : " + name + ",attack:" + attack + ",walkspeed:" + walkspeed + "}";
+        return "{global:" + globalId + ",active:" + active + ",name:" + name + ",attack:" + attack + ",walkspeed:" + walkspeed + "}";
     }
 
     public static Attrib deserialize(Node node, int id) {

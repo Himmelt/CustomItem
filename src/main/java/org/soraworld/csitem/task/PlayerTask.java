@@ -9,7 +9,6 @@ import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.text.Text;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -19,15 +18,15 @@ public class PlayerTask implements Consumer<Task> {
     private final Player player;
     //private static AttribManager manager;
 
-    private IAttributeInstance MAX_HEALTH;
-    private IAttributeInstance KNOCK_RESIST;
-    private IAttributeInstance MOVE_SPEED;
-    //private IAttributeInstance FLY_SPEED;
-    private IAttributeInstance ATTACK_DAMAGE;
-    private IAttributeInstance ATTACK_SPEED;
-    private IAttributeInstance ARMOR;
-    private IAttributeInstance ARMOR_TOUGHNESS;
-    private IAttributeInstance LUCK;
+    private final IAttributeInstance MAX_HEALTH;
+    private final IAttributeInstance KNOCK_RESIST;
+    private final IAttributeInstance MOVE_SPEED;
+    //private final IAttributeInstance FLY_SPEED;
+    private final IAttributeInstance ATTACK_DAMAGE;
+    private final IAttributeInstance ATTACK_SPEED;
+    private final IAttributeInstance ARMOR;
+    private final IAttributeInstance ARMOR_TOUGHNESS;
+    private final IAttributeInstance LUCK;
 
     private static final UUID maxHealthUUID = UUID.fromString("6bea37f2-a767-477e-8386-3fa83a77d34d");
     private static final UUID knockResistUUID = UUID.fromString("034d1b02-b3ca-4d7e-a0ef-b96109064c7e");
@@ -54,8 +53,7 @@ public class PlayerTask implements Consumer<Task> {
     }
 
     public void accept(Task task) {
-        player.sendMessage(Text.of(task.getName()));
-        if (player.isOnline()) {
+        if (player.isLoaded()) {
             final State state = new State();
 
             // Check ItemInHand

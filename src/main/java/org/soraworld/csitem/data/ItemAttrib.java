@@ -21,6 +21,9 @@ import java.util.Set;
 @Serializable
 public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, ItemAttrib.Immutable> {
 
+    public static final DataQuery ACTIVE = DataQuery.of("active");
+    public static final DataQuery GLOBAL = DataQuery.of("global");
+
     public static final DataQuery NAME = DataQuery.of("name");
     public static final DataQuery ATTACK = DataQuery.of("attack");
     public static final DataQuery MANA_ATTACK = DataQuery.of("manaAttack");
@@ -34,7 +37,6 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
     public static final DataQuery FREEZE_CHANCE = DataQuery.of("freezeChance");
     public static final DataQuery POISON_CHANCE = DataQuery.of("poisonChance");
     public static final DataQuery BLOOD_CHANCE = DataQuery.of("bloodChance");
-
 
     public ItemAttrib() {
     }
@@ -50,8 +52,12 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
     }
 
     public Optional<ItemAttrib> from(DataContainer con) {
-        if (con.contains(NAME)) {
+        if (con.contains(GLOBAL)) {
             reset();
+
+            con.getInt(GLOBAL).ifPresent(i -> globalId = i);
+            con.getBoolean(ACTIVE).ifPresent(b -> active = b);
+
             con.getString(NAME).ifPresent(s -> name = s);
             con.getInt(ATTACK).ifPresent(i -> attack = i);
             con.getInt(MANA_ATTACK).ifPresent(i -> manaAttack = i);
@@ -107,6 +113,9 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
 
     public DataContainer toContainer() {
         return DataContainer.createNew()
+                .set(GLOBAL, globalId)
+                .set(ACTIVE, active)
+
                 .set(NAME, name)
                 .set(ATTACK, attack)
                 .set(MANA_ATTACK, manaAttack)
@@ -172,6 +181,10 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
         public Optional<ItemAttrib> build(DataView con) throws InvalidDataException {
             if (con.contains(NAME)) {
                 ItemAttrib attrib = new ItemAttrib();
+
+                con.getInt(GLOBAL).ifPresent(i -> attrib.globalId = i);
+                con.getBoolean(ACTIVE).ifPresent(b -> attrib.active = b);
+
                 con.getString(NAME).ifPresent(s -> attrib.name = s);
                 con.getInt(ATTACK).ifPresent(i -> attrib.attack = i);
                 con.getInt(MANA_ATTACK).ifPresent(i -> attrib.manaAttack = i);
