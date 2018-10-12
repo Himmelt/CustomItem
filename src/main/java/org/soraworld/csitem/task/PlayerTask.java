@@ -9,6 +9,7 @@ import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.text.Text;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -53,6 +54,7 @@ public class PlayerTask implements Consumer<Task> {
     }
 
     public void accept(Task task) {
+        player.sendMessage(Text.of(task.getName()));
         if (player.isOnline()) {
             final State state = new State();
 
@@ -72,6 +74,7 @@ public class PlayerTask implements Consumer<Task> {
     private void fetchState(ItemStack stack, State state) {
         stack.get(ItemAttrib.class).ifPresent(attrib -> {
             state.attackDamage += attrib.attack;
+            state.moveSpeed += attrib.walkspeed;
         });
     }
 

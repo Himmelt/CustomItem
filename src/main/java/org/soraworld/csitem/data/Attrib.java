@@ -6,6 +6,7 @@ import org.soraworld.hocon.node.*;
 public class Attrib {
 
     public int globalId = -1;
+    public boolean active = false;
 
     @Setting
     public String name = "";

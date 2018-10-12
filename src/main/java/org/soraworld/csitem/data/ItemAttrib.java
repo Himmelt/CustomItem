@@ -35,6 +35,7 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
     public static final DataQuery POISON_CHANCE = DataQuery.of("poisonChance");
     public static final DataQuery BLOOD_CHANCE = DataQuery.of("bloodChance");
 
+
     public ItemAttrib() {
     }
 
