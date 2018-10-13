@@ -9,7 +9,9 @@ import org.soraworld.violet.command.SpongeBaseSubs;
 import org.soraworld.violet.command.SpongeCommand;
 import org.soraworld.violet.manager.SpongeManager;
 import org.soraworld.violet.plugin.SpongePlugin;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataRegistration;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Dependency;
@@ -68,5 +70,11 @@ public class CustomItem extends SpongePlugin {
         command.extractSub(CommandCustomItem.class);
         command.setUsage("/csitem ....");
         register(this, command);
+    }
+
+    public void afterEnable() {
+        for (Player player : Sponge.getServer().getOnlinePlayers()) {
+            ((AttribManager) manager).createPlayerTask(player);
+        }
     }
 }

@@ -8,6 +8,7 @@ import org.soraworld.violet.command.Sub;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.text.Text;
 
 import java.util.function.BiConsumer;
@@ -193,49 +194,49 @@ public final class CommandCustomItem {
 
     private static void getSetInt(AttribManager manager, Player player, Args args, String Name, int min, int max, BiConsumer<ItemAttrib, Integer> consumer, Function<ItemAttrib, Integer> fun) {
         player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
-            // TODO check empty slot air ?
-            if (args.notEmpty()) {
-                stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
-                    try {
-                        int value = Integer.valueOf(args.first());
-                        value = value < min ? min : value > max ? max : value;
-                        consumer.accept(attrib, value);
-                        stack.offer(attrib);
-                        manager.sendKey(player, "set" + Name, value);
-                        player.setItemInHand(HandTypes.MAIN_HAND, stack);
-                    } catch (NumberFormatException ignored) {
-                        manager.sendKey(player, "invalidInt");
-                    }
-                });
-            } else {
-                stack.get(ItemAttrib.class).ifPresent(attrib -> manager.sendKey(player, "get" + Name, fun.apply(attrib)));
-                //manager.sendKey(player, "noAttrib");
-            }
+            if (stack.getType() != ItemTypes.AIR) {
+                if (args.notEmpty()) {
+                    stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
+                        try {
+                            int value = Integer.valueOf(args.first());
+                            value = value < min ? min : value > max ? max : value;
+                            consumer.accept(attrib, value);
+                            stack.offer(attrib);
+                            manager.sendKey(player, "set" + Name, value);
+                            player.setItemInHand(HandTypes.MAIN_HAND, stack);
+                        } catch (NumberFormatException ignored) {
+                            manager.sendKey(player, "invalidInt");
+                        }
+                    });
+                } else {
+                    stack.get(ItemAttrib.class).ifPresent(attrib -> manager.sendKey(player, "get" + Name, fun.apply(attrib)));
+                    //manager.sendKey(player, "noAttrib");
+                }
+            } else manager.sendKey(player, "emptyHand");
         });
-        //manager.sendKey(player, "emptyHand");
     }
 
     private static void getSetFloat(AttribManager manager, Player player, Args args, String Name, float min, float max, BiConsumer<ItemAttrib, Float> consumer, Function<ItemAttrib, Float> fun) {
         player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
-            // TODO check empty slot air ?
-            if (args.notEmpty()) {
-                stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
-                    try {
-                        float value = Float.valueOf(args.first());
-                        value = value < min ? min : value > max ? max : value;
-                        consumer.accept(attrib, value);
-                        stack.offer(attrib);
-                        manager.sendKey(player, "set" + Name, value);
-                        player.setItemInHand(HandTypes.MAIN_HAND, stack);
-                    } catch (NumberFormatException ignored) {
-                        manager.sendKey(player, "invalidFloat");
-                    }
-                });
-            } else {
-                stack.get(ItemAttrib.class).ifPresent(attrib -> manager.sendKey(player, "get" + Name, fun.apply(attrib)));
-                //manager.sendKey(player, "noAttrib");
-            }
+            if (stack.getType() != ItemTypes.AIR) {
+                if (args.notEmpty()) {
+                    stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
+                        try {
+                            float value = Float.valueOf(args.first());
+                            value = value < min ? min : value > max ? max : value;
+                            consumer.accept(attrib, value);
+                            stack.offer(attrib);
+                            manager.sendKey(player, "set" + Name, value);
+                            player.setItemInHand(HandTypes.MAIN_HAND, stack);
+                        } catch (NumberFormatException ignored) {
+                            manager.sendKey(player, "invalidFloat");
+                        }
+                    });
+                } else {
+                    stack.get(ItemAttrib.class).ifPresent(attrib -> manager.sendKey(player, "get" + Name, fun.apply(attrib)));
+                    //manager.sendKey(player, "noAttrib");
+                }
+            } else manager.sendKey(player, "emptyHand");
         });
-        //manager.sendKey(player, "emptyHand");
     }
 }
