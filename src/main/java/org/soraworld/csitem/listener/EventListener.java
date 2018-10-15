@@ -60,8 +60,8 @@ public class EventListener {
     @Listener
     public void onAttackEntity(AttackEntityEvent event, @Getter("getTargetEntity") Entity target, @First Entity cause) {
         if (cause instanceof Player) {
-            Player player = (Player) cause;
-            player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
+            Player attacker = (Player) cause;
+            attacker.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
                 stack.get(ItemAttrib.class).ifPresent(attrib -> {
                     if (attrib.critChance > 0 && attrib.critChance > random.nextFloat()) {
                         event.addDamageModifierAfter(
@@ -75,16 +75,13 @@ public class EventListener {
                                 operand -> attrib.critDamage,
                                 Collections.singleton(DamageModifierTypes.CRITICAL_HIT)
                         );
-                        /*event.setOutputDamage(DamageModifier.builder()
-                                .cause(Cause.builder()
-                                        .append(manager.getPlugin())
-                                        .build(EventContext.empty()))
-                                //.item(stack)
-                                .type(DamageModifierTypes.CRITICAL_HIT)
-                                .build(), operand -> operand + attrib.critDamage);*/
                     }
                 });
             });
+        }
+        if (target instanceof Player) {
+            Player victim = (Player) target;
+
         }
     }
 

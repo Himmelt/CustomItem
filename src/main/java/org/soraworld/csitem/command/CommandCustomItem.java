@@ -1,5 +1,6 @@
 package org.soraworld.csitem.command;
 
+import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.data.ItemAttrib;
 import org.soraworld.csitem.manager.AttribManager;
 import org.soraworld.violet.command.Args;
@@ -14,6 +15,9 @@ import org.spongepowered.api.text.Text;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import static org.soraworld.csitem.manager.AttribManager.createAttrib;
+import static org.soraworld.csitem.manager.AttribManager.getAttrib;
+
 public final class CommandCustomItem {
 
     @Sub
@@ -25,23 +29,40 @@ public final class CommandCustomItem {
                     if (args.notEmpty()) attrib.name = args.first();
                     stack.offer(attrib);
                     player.sendMessage(Text.of(attrib));
-                    player.sendMessage(Text.of("content-version:" + attrib.getContentVersion()));
                     player.setItemInHand(HandTypes.MAIN_HAND, stack);
                 });
             });
         }
     }
 
-    @Sub(perm = "admin", onlyPlayer = true, usage = "/csi global [id]")
+    @Sub(path = "global", virtual = true, perm = "admin", aliases = {"g"}, tabs = {"id", "create", "remove"})
     public static void global(SpongeCommand self, CommandSource sender, Args args) {
+    }
+
+    @Sub(path = "global.id", perm = "admin", onlyPlayer = true, usage = "/csi global id [id]")
+    public static void global_id(SpongeCommand self, CommandSource sender, Args args) {
         getSetInt(
                 (AttribManager) self.manager,
                 (Player) sender,
-                args, "Attack",
+                args, "GlobalId",
                 0, Integer.MAX_VALUE,
                 (attrib, value) -> attrib.globalId = value,
                 attrib -> attrib.globalId
         );
+    }
+
+    @Sub(path = "global.create", perm = "admin", usage = "/csi global create <name|id>")
+    public static void global_create(SpongeCommand self, CommandSource sender, Args args) {
+        if (args.notEmpty()) {
+            String first = args.first();
+            if (first.matches("\\d+")) {
+                if (createAttrib(Integer.valueOf(first))) {
+                    self.manager.sendKey(sender, "global.createSuccess");
+                } else self.manager.sendKey(sender, "global.alreadyExist");
+            } else if (createAttrib(first)) {
+                self.manager.sendKey(sender, "global.createSuccess");
+            } else self.manager.sendKey(sender, "global.alreadyExist");
+        } else self.manager.sendKey(sender, "emptyArgs");
     }
 
     @Sub(perm = "admin", onlyPlayer = true, usage = "/csi attack [damage]")
@@ -192,48 +213,90 @@ public final class CommandCustomItem {
         );
     }
 
-    private static void getSetInt(AttribManager manager, Player player, Args args, String Name, int min, int max, BiConsumer<ItemAttrib, Integer> consumer, Function<ItemAttrib, Integer> fun) {
+    private static void getSetInt(AttribManager manager, Player player, Args args, String Name, int min, int max, BiConsumer<Attrib, Integer> consumer, Function<Attrib, Integer> fun) {
         player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
             if (stack.getType() != ItemTypes.AIR) {
                 if (args.notEmpty()) {
                     stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
-                        try {
-                            int value = Integer.valueOf(args.first());
-                            value = value < min ? min : value > max ? max : value;
-                            consumer.accept(attrib, value);
-                            stack.offer(attrib);
-                            manager.sendKey(player, "set" + Name, value);
-                            player.setItemInHand(HandTypes.MAIN_HAND, stack);
-                        } catch (NumberFormatException ignored) {
-                            manager.sendKey(player, "invalidInt");
+                        if (attrib.globalId >= 0) {
+                            Attrib global = getAttrib(attrib.globalId);
+                            if (global != null) {
+                                try {
+                                    int value = Integer.valueOf(args.first());
+                                    value = value < min ? min : value > max ? max : value;
+                                    consumer.accept(global, value);
+                                    manager.sendKey(player, "global.set" + Name, value);
+                                } catch (NumberFormatException ignored) {
+                                    manager.sendKey(player, "invalidInt");
+                                }
+                            } else manager.sendKey(player, "idNotExist");
+                        } else {
+                            try {
+                                int value = Integer.valueOf(args.first());
+                                value = value < min ? min : value > max ? max : value;
+                                consumer.accept(attrib, value);
+                                stack.offer(attrib);
+                                manager.sendKey(player, "set" + Name, value);
+                                player.setItemInHand(HandTypes.MAIN_HAND, stack);
+                            } catch (NumberFormatException ignored) {
+                                manager.sendKey(player, "invalidInt");
+                            }
                         }
                     });
                 } else {
-                    stack.get(ItemAttrib.class).ifPresent(attrib -> manager.sendKey(player, "get" + Name, fun.apply(attrib)));
+                    stack.get(ItemAttrib.class).ifPresent(attrib -> {
+                        if (attrib.globalId >= 0) {
+                            Attrib global = getAttrib(attrib.globalId);
+                            if (global != null) {
+                                manager.sendKey(player, "global.get" + Name, fun.apply(global));
+                            } else manager.sendKey(player, "idNotExist");
+                        } else manager.sendKey(player, "get" + Name, fun.apply(attrib));
+                    });
                     //manager.sendKey(player, "noAttrib");
                 }
             } else manager.sendKey(player, "emptyHand");
         });
     }
 
-    private static void getSetFloat(AttribManager manager, Player player, Args args, String Name, float min, float max, BiConsumer<ItemAttrib, Float> consumer, Function<ItemAttrib, Float> fun) {
+    private static void getSetFloat(AttribManager manager, Player player, Args args, String Name, float min, float max, BiConsumer<Attrib, Float> consumer, Function<Attrib, Float> fun) {
         player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
             if (stack.getType() != ItemTypes.AIR) {
                 if (args.notEmpty()) {
                     stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
-                        try {
-                            float value = Float.valueOf(args.first());
-                            value = value < min ? min : value > max ? max : value;
-                            consumer.accept(attrib, value);
-                            stack.offer(attrib);
-                            manager.sendKey(player, "set" + Name, value);
-                            player.setItemInHand(HandTypes.MAIN_HAND, stack);
-                        } catch (NumberFormatException ignored) {
-                            manager.sendKey(player, "invalidFloat");
+                        if (attrib.globalId >= 0) {
+                            Attrib global = getAttrib(attrib.globalId);
+                            if (global != null) {
+                                try {
+                                    float value = Float.valueOf(args.first());
+                                    value = value < min ? min : value > max ? max : value;
+                                    consumer.accept(global, value);
+                                    manager.sendKey(player, "global.set" + Name, value);
+                                } catch (NumberFormatException ignored) {
+                                    manager.sendKey(player, "invalidInt");
+                                }
+                            } else manager.sendKey(player, "idNotExist");
+                        } else {
+                            try {
+                                float value = Float.valueOf(args.first());
+                                value = value < min ? min : value > max ? max : value;
+                                consumer.accept(attrib, value);
+                                stack.offer(attrib);
+                                manager.sendKey(player, "set" + Name, value);
+                                player.setItemInHand(HandTypes.MAIN_HAND, stack);
+                            } catch (NumberFormatException ignored) {
+                                manager.sendKey(player, "invalidFloat");
+                            }
                         }
                     });
                 } else {
-                    stack.get(ItemAttrib.class).ifPresent(attrib -> manager.sendKey(player, "get" + Name, fun.apply(attrib)));
+                    stack.get(ItemAttrib.class).ifPresent(attrib -> {
+                        if (attrib.globalId >= 0) {
+                            Attrib global = getAttrib(attrib.globalId);
+                            if (global != null) {
+                                manager.sendKey(player, "global.get" + Name, fun.apply(global));
+                            } else manager.sendKey(player, "idNotExist");
+                        } else manager.sendKey(player, "get" + Name, fun.apply(attrib));
+                    });
                     //manager.sendKey(player, "noAttrib");
                 }
             } else manager.sendKey(player, "emptyHand");

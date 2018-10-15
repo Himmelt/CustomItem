@@ -31,7 +31,9 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
     public static final DataQuery CRIT_DAMAGE = DataQuery.of("critDamage");
     public static final DataQuery WALK_SPEED = DataQuery.of("walkSpeed");
     public static final DataQuery BLOCK_CHANCE = DataQuery.of("blockChance");
+    public static final DataQuery LAST_BLOCK = DataQuery.of("lastBlock");
     public static final DataQuery DODGE_CHANCE = DataQuery.of("dodgeChance");
+    public static final DataQuery LAST_DODGE = DataQuery.of("lastDodge");
     public static final DataQuery SUCK_RATIO = DataQuery.of("suckRatio");
     public static final DataQuery FIRE_CHANCE = DataQuery.of("fireChance");
     public static final DataQuery FREEZE_CHANCE = DataQuery.of("freezeChance");
@@ -65,7 +67,9 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
             con.getFloat(CRIT_DAMAGE).ifPresent(f -> critDamage = f);
             con.getFloat(WALK_SPEED).ifPresent(f -> walkspeed = f);
             con.getFloat(BLOCK_CHANCE).ifPresent(f -> blockChance = f);
+            con.getLong(LAST_BLOCK).ifPresent(l -> lastBlock = l);
             con.getFloat(DODGE_CHANCE).ifPresent(f -> dodgeChance = f);
+            con.getLong(LAST_DODGE).ifPresent(l -> lastDodge = l);
             con.getFloat(SUCK_RATIO).ifPresent(f -> suckRatio = f);
             con.getFloat(FIRE_CHANCE).ifPresent(f -> fireChance = f);
             con.getFloat(FREEZE_CHANCE).ifPresent(f -> freezeChance = f);
@@ -123,7 +127,9 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
                 .set(CRIT_DAMAGE, critDamage)
                 .set(WALK_SPEED, walkspeed)
                 .set(BLOCK_CHANCE, blockChance)
+                .set(LAST_BLOCK, lastBlock)
                 .set(DODGE_CHANCE, dodgeChance)
+                .set(LAST_DODGE, lastDodge)
                 .set(SUCK_RATIO, suckRatio)
                 .set(FIRE_CHANCE, fireChance)
                 .set(FREEZE_CHANCE, freezeChance)
@@ -192,7 +198,9 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
                 con.getFloat(CRIT_DAMAGE).ifPresent(f -> attrib.critDamage = f);
                 con.getFloat(WALK_SPEED).ifPresent(f -> attrib.walkspeed = f);
                 con.getFloat(BLOCK_CHANCE).ifPresent(f -> attrib.blockChance = f);
+                con.getLong(LAST_BLOCK).ifPresent(l -> attrib.lastBlock = l);
                 con.getFloat(DODGE_CHANCE).ifPresent(f -> attrib.dodgeChance = f);
+                con.getLong(LAST_DODGE).ifPresent(l -> attrib.lastDodge = l);
                 con.getFloat(SUCK_RATIO).ifPresent(f -> attrib.suckRatio = f);
                 con.getFloat(FIRE_CHANCE).ifPresent(f -> attrib.fireChance = f);
                 con.getFloat(FREEZE_CHANCE).ifPresent(f -> attrib.freezeChance = f);

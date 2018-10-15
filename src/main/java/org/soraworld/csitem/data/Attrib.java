@@ -20,8 +20,10 @@ public class Attrib {
     public float walkspeed = 0;
     @Setting
     public float blockChance = 0;
+    public long lastBlock = 0;
     @Setting
     public float dodgeChance = 0;
+    public long lastDodge = 0;
     @Setting
     public float suckRatio = 0;
     @Setting
@@ -37,7 +39,12 @@ public class Attrib {
     }
 
     public Attrib(int id) {
-        globalId = id;
+        this.globalId = id;
+    }
+
+    public Attrib(int id, String name) {
+        this.globalId = id;
+        this.name = name;
     }
 
     public Attrib(Attrib other) {
@@ -56,7 +63,9 @@ public class Attrib {
             critDamage = old.critDamage;
             walkspeed = old.walkspeed;
             blockChance = old.blockChance;
+            lastBlock = old.lastBlock;
             dodgeChance = old.dodgeChance;
+            lastDodge = old.lastDodge;
             suckRatio = old.suckRatio;
             fireChance = old.fireChance;
             freezeChance = old.freezeChance;
@@ -76,7 +85,9 @@ public class Attrib {
         critDamage = 0;
         walkspeed = 0;
         blockChance = 0;
+        lastBlock = 0;
         dodgeChance = 0;
+        lastDodge = 0;
         suckRatio = 0;
         fireChance = 0;
         freezeChance = 0;
@@ -85,7 +96,7 @@ public class Attrib {
     }
 
     public String toString() {
-        return "{global:" + globalId + ",active:" + active + ",name:" + name + ",attack:" + attack + ",walkspeed:" + walkspeed + "}";
+        return "{\nglobal:" + globalId + ",\n  active:" + active + ",\n  name:" + name + ",\n  attack:" + attack + ",\n  walkspeed:" + walkspeed + "\n}";
     }
 
     public static Attrib deserialize(Node node, int id) {

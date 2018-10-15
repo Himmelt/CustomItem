@@ -28,6 +28,7 @@ public class AttribManager extends SpongeManager {
     private final Path itemsFile;
     private static HashMap<String, Integer> names = new HashMap<>();
     private static HashMap<Integer, Attrib> items = new HashMap<>();
+    private static int NEXT_ID = 0;
 
     public AttribManager(SpongePlugin plugin, Path path) {
         super(plugin, path);
@@ -53,12 +54,14 @@ public class AttribManager extends SpongeManager {
         try {
             node.load(false);
             items.clear();
+            int maxId = -1;
             for (String key : node.keys()) {
                 try {
                     int id = Integer.valueOf(key);
                     Attrib attrib = deserialize(node.get(key), id);
                     if (attrib != null) {
                         items.put(attrib.globalId, attrib);
+                        if (attrib.globalId > maxId) maxId = attrib.globalId;
                         if (attrib.name != null && !attrib.name.isEmpty()) {
                             names.put(attrib.name, attrib.globalId);
                         }
@@ -67,6 +70,7 @@ public class AttribManager extends SpongeManager {
                     e.printStackTrace();
                 }
             }
+            NEXT_ID = maxId + 1;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -91,6 +95,42 @@ public class AttribManager extends SpongeManager {
                 .intervalTicks(updateTicks)
                 .name(PLUGIN_ID + "-" + player.getName())
                 .submit(plugin);
+    }
+
+    public static Attrib getAttrib(int globalId) {
+        return items.get(globalId);
+    }
+
+    public static Attrib getOrCreate(int id) {
+        return items.computeIfAbsent(id, Attrib::new);
+    }
+
+    public static Attrib getOrCreate(int id, String name) {
+        return items.computeIfAbsent(id, integer -> new Attrib(integer, name));
+    }
+
+    public static boolean createAttrib(int id) {
+        return createAttrib(id, "");
+    }
+
+    public static boolean createAttrib(int id, String name) {
+        if (!items.containsKey(id)) {
+            items.put(id, new Attrib(id, name));
+            return true;
+        }
+        return false;
+    }
+
+    public static Attrib getOrCreate(String name) {
+        return getOrCreate(names.computeIfAbsent(name, s -> NEXT_ID++), name);
+    }
+
+    public static boolean createAttrib(String name) {
+        if (!names.containsKey(name)) {
+            names.put(name, NEXT_ID);
+            return createAttrib(NEXT_ID++, name);
+        }
+        return createAttrib(names.get(name), name);
     }
 
 }
