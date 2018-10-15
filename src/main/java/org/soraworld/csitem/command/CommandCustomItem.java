@@ -15,8 +15,7 @@ import org.spongepowered.api.text.Text;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static org.soraworld.csitem.manager.AttribManager.createAttrib;
-import static org.soraworld.csitem.manager.AttribManager.getAttrib;
+import static org.soraworld.csitem.manager.AttribManager.*;
 
 public final class CommandCustomItem {
 
@@ -53,16 +52,36 @@ public final class CommandCustomItem {
 
     @Sub(path = "global.create", perm = "admin", usage = "/csi global create <name|id>")
     public static void global_create(SpongeCommand self, CommandSource sender, Args args) {
+        AttribManager manager = ((AttribManager) self.manager);
         if (args.notEmpty()) {
             String first = args.first();
             if (first.matches("\\d+")) {
                 if (createAttrib(Integer.valueOf(first))) {
-                    self.manager.sendKey(sender, "global.createSuccess");
-                } else self.manager.sendKey(sender, "global.alreadyExist");
+                    manager.saveItems();
+                    manager.sendKey(sender, "global.createSuccess");
+                } else manager.sendKey(sender, "global.alreadyExist");
             } else if (createAttrib(first)) {
-                self.manager.sendKey(sender, "global.createSuccess");
-            } else self.manager.sendKey(sender, "global.alreadyExist");
-        } else self.manager.sendKey(sender, "emptyArgs");
+                manager.saveItems();
+                manager.sendKey(sender, "global.createSuccess");
+            } else manager.sendKey(sender, "global.alreadyExist");
+        } else manager.sendKey(sender, "emptyArgs");
+    }
+
+    @Sub(path = "global.remove", perm = "admin", usage = "/csi global remove <name|id>")
+    public static void global_remove(SpongeCommand self, CommandSource sender, Args args) {
+        AttribManager manager = ((AttribManager) self.manager);
+        if (args.notEmpty()) {
+            String first = args.first();
+            if (first.matches("\\d+")) {
+                if (removeAttrib(Integer.valueOf(first))) {
+                    manager.saveItems();
+                    manager.sendKey(sender, "global.removeSuccess");
+                } else manager.sendKey(sender, "global.idNotExist");
+            } else if (removeAttrib(first)) {
+                manager.saveItems();
+                manager.sendKey(sender, "global.removeSuccess");
+            } else manager.sendKey(sender, "global.idNotExist");
+        } else manager.sendKey(sender, "emptyArgs");
     }
 
     @Sub(perm = "admin", onlyPlayer = true, usage = "/csi attack [damage]")
@@ -218,6 +237,17 @@ public final class CommandCustomItem {
             if (stack.getType() != ItemTypes.AIR) {
                 if (args.notEmpty()) {
                     stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
+                        if ("GlobalId".equals(Name)) {
+                            try {
+                                attrib.globalId = Integer.valueOf(args.first());
+                                stack.offer(attrib);
+                                manager.sendKey(player, "set" + Name, attrib.globalId);
+                                player.setItemInHand(HandTypes.MAIN_HAND, stack);
+                            } catch (NumberFormatException ignored) {
+                                manager.sendKey(player, "invalidInt");
+                            }
+                            return;
+                        }
                         if (attrib.globalId >= 0) {
                             Attrib global = getAttrib(attrib.globalId);
                             if (global != null) {
@@ -225,22 +255,23 @@ public final class CommandCustomItem {
                                     int value = Integer.valueOf(args.first());
                                     value = value < min ? min : value > max ? max : value;
                                     consumer.accept(global, value);
+                                    manager.saveItems();
                                     manager.sendKey(player, "global.set" + Name, value);
                                 } catch (NumberFormatException ignored) {
                                     manager.sendKey(player, "invalidInt");
                                 }
-                            } else manager.sendKey(player, "idNotExist");
-                        } else {
-                            try {
-                                int value = Integer.valueOf(args.first());
-                                value = value < min ? min : value > max ? max : value;
-                                consumer.accept(attrib, value);
-                                stack.offer(attrib);
-                                manager.sendKey(player, "set" + Name, value);
-                                player.setItemInHand(HandTypes.MAIN_HAND, stack);
-                            } catch (NumberFormatException ignored) {
-                                manager.sendKey(player, "invalidInt");
-                            }
+                            } else manager.sendKey(player, "global.idNotExist");
+                            return;
+                        }
+                        try {
+                            int value = Integer.valueOf(args.first());
+                            value = value < min ? min : value > max ? max : value;
+                            consumer.accept(attrib, value);
+                            stack.offer(attrib);
+                            manager.sendKey(player, "set" + Name, value);
+                            player.setItemInHand(HandTypes.MAIN_HAND, stack);
+                        } catch (NumberFormatException ignored) {
+                            manager.sendKey(player, "invalidInt");
                         }
                     });
                 } else {
@@ -270,6 +301,7 @@ public final class CommandCustomItem {
                                     float value = Float.valueOf(args.first());
                                     value = value < min ? min : value > max ? max : value;
                                     consumer.accept(global, value);
+                                    manager.saveItems();
                                     manager.sendKey(player, "global.set" + Name, value);
                                 } catch (NumberFormatException ignored) {
                                     manager.sendKey(player, "invalidInt");

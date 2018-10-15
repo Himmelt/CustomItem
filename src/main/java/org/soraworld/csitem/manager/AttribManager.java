@@ -133,4 +133,21 @@ public class AttribManager extends SpongeManager {
         return createAttrib(names.get(name), name);
     }
 
+    public static boolean removeAttrib(int id) {
+        if (items.containsKey(id)) {
+            Attrib attrib = items.remove(id);
+            names.remove(attrib.name);
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean removeAttrib(String name) {
+        if (names.containsKey(name)) {
+            items.remove(names.remove(name));
+            return true;
+        }
+        return false;
+    }
+
 }
