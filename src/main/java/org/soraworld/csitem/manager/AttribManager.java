@@ -7,6 +7,7 @@ import org.soraworld.hocon.node.Setting;
 import org.soraworld.violet.manager.SpongeManager;
 import org.soraworld.violet.plugin.SpongePlugin;
 import org.soraworld.violet.util.ChatColor;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
 
@@ -97,6 +98,14 @@ public class AttribManager extends SpongeManager {
                 .submit(plugin);
     }
 
+    public static boolean hasAttrib(int id) {
+        return items.containsKey(id);
+    }
+
+    public static boolean hasAttrib(String name) {
+        return names.containsKey(name) && items.containsKey(names.get(name));
+    }
+
     public static Attrib getAttrib(int globalId) {
         return items.get(globalId);
     }
@@ -150,4 +159,11 @@ public class AttribManager extends SpongeManager {
         return false;
     }
 
+    public void showAttribInfo(CommandSource sender, int id) {
+        // TODO show info
+    }
+
+    public void showAttribInfo(CommandSource sender, String name) {
+        // TODO show info
+    }
 }

@@ -50,6 +50,22 @@ public final class CommandCustomItem {
         );
     }
 
+    @Sub(path = "global.info", perm = "admin", usage = "/csi global info <id|name>")
+    public static void global_info(SpongeCommand self, CommandSource sender, Args args) {
+        AttribManager manager = ((AttribManager) self.manager);
+        if (args.notEmpty()) {
+            String first = args.first();
+            if (first.matches("\\d+")) {
+                int id = Integer.valueOf(first);
+                if (hasAttrib(id)) {
+                    manager.showAttribInfo(sender, id);
+                } else manager.sendKey(sender, "global.idNotExist");
+            } else if (hasAttrib(first)) {
+                manager.showAttribInfo(sender, first);
+            } else manager.sendKey(sender, "global.idNotExist");
+        } else manager.sendKey(sender, "emptyArgs");
+    }
+
     @Sub(path = "global.create", perm = "admin", usage = "/csi global create <name|id>")
     public static void global_create(SpongeCommand self, CommandSource sender, Args args) {
         AttribManager manager = ((AttribManager) self.manager);
