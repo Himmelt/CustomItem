@@ -1,8 +1,12 @@
 package org.soraworld.csitem.listener;
 
 import org.soraworld.csitem.data.ItemAttrib;
+import org.soraworld.csitem.data.PlayerAttrib;
 import org.soraworld.csitem.manager.AttribManager;
+import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.data.type.HandTypes;
+import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -81,7 +85,34 @@ public class EventListener {
         }
         if (target instanceof Player) {
             Player victim = (Player) target;
-
+            PlayerAttrib attrib = getPlayerAttrib(victim);
+            if (attrib.dodgeChance > 0 && attrib.dodgeChance > random.nextFloat()) {
+                // TODO check & need cancel event ?
+                victim.getOrCreate(PotionEffectData.class).ifPresent(data -> {
+                    // TODO check override exist effects ?
+                    data.addElement(PotionEffect.builder()
+                            .potionType(PotionEffectTypes.SPEED)
+                            .duration(40).amplifier(2).ambience(true).particles(false)
+                            .build());
+                    victim.offer(data);
+                });
+                // TODO update lastDodge
+                event.setBaseOutputDamage(0);
+                return;
+            }
+            if (attrib.blockChance > 0 && attrib.blockChance > random.nextFloat()) {
+                // TODO check & need cancel event ?
+                victim.getOrCreate(PotionEffectData.class).ifPresent(data -> {
+                    // TODO check override exist effects ?
+                    data.addElement(PotionEffect.builder()
+                            .potionType(PotionEffectTypes.SLOWNESS)
+                            .duration(40).amplifier(2).ambience(true).particles(false)
+                            .build());
+                    victim.offer(data);
+                });
+                // TODO update lastBlock
+                event.setBaseOutputDamage(0);
+            }
         }
     }
 
@@ -93,5 +124,93 @@ public class EventListener {
     @Listener
     public void onRespawnPlayer(RespawnPlayerEvent event) {
         manager.createPlayerTask(event.getTargetEntity());
+    }
+
+    private static PlayerAttrib getPlayerAttrib(Player player) {
+        PlayerAttrib pa = new PlayerAttrib();
+        // TODO positive & negative attributes
+        // Check ItemInHand
+        player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
+            stack.get(ItemAttrib.class).ifPresent(attrib -> {
+                pa.critChance = attrib.critChance;
+                pa.critDamage = attrib.critDamage;
+                pa.blockChance = attrib.blockChance;
+                pa.lastBlock = attrib.lastBlock;
+                pa.dodgeChance = attrib.dodgeChance;
+                pa.lastDodge = attrib.lastDodge;
+                pa.suckRatio = attrib.suckRatio;
+                pa.fireChance = attrib.fireChance;
+                pa.freezeChance = attrib.freezeChance;
+                pa.poisonChance = attrib.poisonChance;
+                pa.bloodChance = attrib.bloodChance;
+            });
+        });
+
+        // Check Armors
+        player.getHelmet().ifPresent(stack -> {
+            // TODO fetch positive attributes state
+            stack.get(ItemAttrib.class).ifPresent(attrib -> {
+                pa.critChance += attrib.critChance;
+                pa.critDamage += attrib.critDamage;
+                pa.blockChance += attrib.blockChance;
+                pa.lastBlock += attrib.lastBlock;
+                pa.dodgeChance += attrib.dodgeChance;
+                pa.lastDodge += attrib.lastDodge;
+                pa.suckRatio += attrib.suckRatio;
+                pa.fireChance += attrib.fireChance;
+                pa.freezeChance += attrib.freezeChance;
+                pa.poisonChance += attrib.poisonChance;
+                pa.bloodChance += attrib.bloodChance;
+            });
+        });
+        player.getChestplate().ifPresent(stack -> {
+            // TODO fetch positive attributes state
+            stack.get(ItemAttrib.class).ifPresent(attrib -> {
+                pa.critChance += attrib.critChance;
+                pa.critDamage += attrib.critDamage;
+                pa.blockChance += attrib.blockChance;
+                pa.lastBlock += attrib.lastBlock;
+                pa.dodgeChance += attrib.dodgeChance;
+                pa.lastDodge += attrib.lastDodge;
+                pa.suckRatio += attrib.suckRatio;
+                pa.fireChance += attrib.fireChance;
+                pa.freezeChance += attrib.freezeChance;
+                pa.poisonChance += attrib.poisonChance;
+                pa.bloodChance += attrib.bloodChance;
+            });
+        });
+        player.getLeggings().ifPresent(stack -> {
+            // TODO fetch positive attributes state
+            stack.get(ItemAttrib.class).ifPresent(attrib -> {
+                pa.critChance += attrib.critChance;
+                pa.critDamage += attrib.critDamage;
+                pa.blockChance += attrib.blockChance;
+                pa.lastBlock += attrib.lastBlock;
+                pa.dodgeChance += attrib.dodgeChance;
+                pa.lastDodge += attrib.lastDodge;
+                pa.suckRatio += attrib.suckRatio;
+                pa.fireChance += attrib.fireChance;
+                pa.freezeChance += attrib.freezeChance;
+                pa.poisonChance += attrib.poisonChance;
+                pa.bloodChance += attrib.bloodChance;
+            });
+        });
+        player.getBoots().ifPresent(stack -> {
+            // TODO fetch positive attributes state
+            stack.get(ItemAttrib.class).ifPresent(attrib -> {
+                pa.critChance += attrib.critChance;
+                pa.critDamage += attrib.critDamage;
+                pa.blockChance += attrib.blockChance;
+                pa.lastBlock += attrib.lastBlock;
+                pa.dodgeChance += attrib.dodgeChance;
+                pa.lastDodge += attrib.lastDodge;
+                pa.suckRatio += attrib.suckRatio;
+                pa.fireChance += attrib.fireChance;
+                pa.freezeChance += attrib.freezeChance;
+                pa.poisonChance += attrib.poisonChance;
+                pa.bloodChance += attrib.bloodChance;
+            });
+        });
+        return pa;
     }
 }
