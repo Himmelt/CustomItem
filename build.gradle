@@ -10,6 +10,14 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.soraworld:hocon:1.0.9'
+}
+
 subprojects {
     apply plugin: 'java'
 
@@ -21,16 +29,23 @@ subprojects {
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
     }
-    
+
     repositories {
         jcenter()
-        maven {
-            name = 'aliyun'
-            url = 'https://maven.aliyun.com/repository/public'
-        }
-        maven {
-            name = 'lss233'
-            url = 'https://www.lss233.com/artifactory/minecraft'
+    }
+
+    configurations {
+        shade
+        compile.extendsFrom(shade)
+    }
+
+    dependencies {
+        shade rootProject
+    }
+
+    jar {
+        configurations.shade.copyRecursive().setTransitive(false).each {
+            artifact -> from(zipTree(artifact))
         }
     }
 }

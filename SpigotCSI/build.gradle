@@ -7,5 +7,6 @@ repositories {
 
 dependencies {
     compile 'org.spigotmc:spigot-api:1.13.1-R0.1-SNAPSHOT'
-    compile files('../lib/spigot-nms-all.jar')
+    compile 'org.soraworld:violet-spigot:2.3.7'
+    compile files('lib/spigot-nms-all.jar')
 }

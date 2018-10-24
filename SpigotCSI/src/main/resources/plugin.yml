@@ -1,0 +1,9 @@
+name: CustomItem
+version: 1.0.0
+author: Himmelt
+main: org.soraworld.csitem.CustomItem
+depend: [Violet]
+description: CustomItem Plugin.
+permissions:
+  customitem.admin:
+    default: op

@@ -1,6 +1,6 @@
 package org.soraworld.csitem;
 
-import org.soraworld.csitem.command.CommandCustomItem;
+import org.soraworld.csitem.command.CommandCSI;
 import org.soraworld.csitem.data.ItemAttrib;
 import org.soraworld.csitem.listener.EventListener;
 import org.soraworld.csitem.manager.AttribManager;
@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Plugin(
-        id = CustomItem.PLUGIN_ID,
-        name = CustomItem.PLUGIN_NAME,
-        version = CustomItem.PLUGIN_VERSION,
+        id = CustomItems.PLUGIN_ID,
+        name = CustomItems.PLUGIN_NAME,
+        version = CustomItems.PLUGIN_VERSION,
         description = "CustomItem Plugin for sponge.",
         dependencies = {
                 @Dependency(
@@ -33,10 +33,6 @@ import java.util.List;
         }
 )
 public class CustomItem extends SpongePlugin {
-
-    public static final String PLUGIN_ID = "customitem";
-    public static final String PLUGIN_NAME = "CustomItem";
-    public static final String PLUGIN_VERSION = "1.0.0";
 
     public void onInit(GameInitializationEvent event) {
         super.onInit(event);
@@ -65,7 +61,7 @@ public class CustomItem extends SpongePlugin {
     protected void registerCommands() {
         SpongeCommand command = new SpongeCommand(getId(), manager.defAdminPerm(), false, manager, "csitem", "csi");
         command.extractSub(SpongeBaseSubs.class);
-        command.extractSub(CommandCustomItem.class);
+        command.extractSub(CommandCSI.class);
         command.setUsage("/csitem ....");
         register(this, command);
     }

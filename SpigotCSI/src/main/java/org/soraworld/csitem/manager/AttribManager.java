@@ -1,19 +1,19 @@
 package org.soraworld.csitem.manager;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.soraworld.csitem.task.PlayerTickTask;
 import org.soraworld.hocon.node.Setting;
-import org.soraworld.violet.manager.SpongeManager;
-import org.soraworld.violet.plugin.SpongePlugin;
+import org.soraworld.violet.manager.SpigotManager;
+import org.soraworld.violet.plugin.SpigotPlugin;
 import org.soraworld.violet.util.ChatColor;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.scheduler.Task;
 
 import java.nio.file.Path;
 
-import static org.soraworld.csitem.CustomItems.PLUGIN_ID;
+import static org.soraworld.csitem.task.PlayerTickTask.createTask;
 
-public class AttribManager extends SpongeManager {
+public class AttribManager extends SpigotManager {
 
     @Setting(comment = "comment.firstGlobal")
     private boolean firstGlobal = true;
@@ -22,7 +22,7 @@ public class AttribManager extends SpongeManager {
 
     private final CSIManager csi;
 
-    public AttribManager(SpongePlugin plugin, Path path) {
+    public AttribManager(SpigotPlugin plugin, Path path) {
         super(plugin, path);
         csi = new CSIManager(path.resolve("globalItems.conf"), options);
     }
@@ -50,19 +50,15 @@ public class AttribManager extends SpongeManager {
     }
 
     public void createPlayerTask(Player player) {
-        Task.builder()
-                .execute(new PlayerTickTask(player))
-                .delayTicks(updateTicks)
-                .intervalTicks(updateTicks)
-                .name(PLUGIN_ID + "-" + player.getName())
-                .submit(plugin);
+        PlayerTickTask task = createTask(player);
+        task.setTaskId(Bukkit.getScheduler().runTaskTimer(plugin, task, updateTicks, updateTicks).getTaskId());
     }
 
-    public void showAttribInfo(CommandSource sender, int id) {
+    public void showAttribInfo(CommandSender sender, int id) {
         // TODO show info
     }
 
-    public void showAttribInfo(CommandSource sender, String name) {
+    public void showAttribInfo(CommandSender sender, String name) {
         // TODO show info
     }
 }

@@ -13,7 +13,7 @@ import org.spongepowered.api.scheduler.Task;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class PlayerTask implements Consumer<Task> {
+public class PlayerTickTask implements Consumer<Task> {
 
     private final Player player;
     //private static AttribManager manager;
@@ -38,7 +38,7 @@ public class PlayerTask implements Consumer<Task> {
     private static final UUID armorToughnessUUID = UUID.fromString("9da0f07b-0633-45d8-bd8a-c212667e372a");
     private static final UUID luckUUID = UUID.fromString("ddec09ee-e2a2-4d0a-b8cd-0abc00c22b3b");
 
-    public PlayerTask(Player player) {
+    public PlayerTickTask(Player player) {
         this.player = player;
         EntityPlayer mce = (EntityPlayer) player;
         MAX_HEALTH = mce.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);

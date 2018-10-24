@@ -10,29 +10,13 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.text.Text;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static org.soraworld.csitem.manager.AttribManager.*;
+import static org.soraworld.csitem.manager.CSIManager.*;
 
-public final class CommandCustomItem {
-
-    @Sub
-    public static void test(SpongeCommand self, CommandSource sender, Args args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
-                stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
-                    if (args.notEmpty()) attrib.name = args.first();
-                    stack.offer(attrib);
-                    player.sendMessage(Text.of(attrib));
-                    player.setItemInHand(HandTypes.MAIN_HAND, stack);
-                });
-            });
-        }
-    }
+public final class CommandCSI {
 
     @Sub(path = "global", virtual = true, perm = "admin", aliases = {"g"}, tabs = {"id", "create", "remove"})
     public static void global(SpongeCommand self, CommandSource sender, Args args) {

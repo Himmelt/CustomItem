@@ -4,3 +4,7 @@
 /lib
 /out
 *.iml
+lib/
+build/
+lib/
+out/
