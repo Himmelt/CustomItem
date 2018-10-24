@@ -12,7 +12,6 @@ import org.soraworld.violet.plugin.SpongePlugin;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -39,7 +38,6 @@ public class CustomItem extends SpongePlugin {
     public static final String PLUGIN_NAME = "CustomItem";
     public static final String PLUGIN_VERSION = "1.0.0";
 
-    @Listener
     public void onInit(GameInitializationEvent event) {
         super.onInit(event);
         DataRegistration.builder()
