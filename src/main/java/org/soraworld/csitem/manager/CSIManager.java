@@ -73,7 +73,7 @@ public class CSIManager {
         return names.containsKey(name) && items.containsKey(names.get(name));
     }
 
-    public static Attrib getAttrib(int globalId) {
+    public static Attrib getGlobalAttrib(int globalId) {
         return items.get(globalId);
     }
 

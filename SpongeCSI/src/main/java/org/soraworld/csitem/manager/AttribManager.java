@@ -5,6 +5,7 @@ import org.soraworld.hocon.node.Setting;
 import org.soraworld.violet.manager.SpongeManager;
 import org.soraworld.violet.plugin.SpongePlugin;
 import org.soraworld.violet.util.ChatColor;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
@@ -35,6 +36,13 @@ public class AttribManager extends SpongeManager {
     public boolean save() {
         csi.saveItems();
         return super.save();
+    }
+
+    public void afterLoad() {
+        Sponge.getScheduler().getScheduledTasks(plugin).forEach(Task::cancel);
+        for (Player player : Sponge.getServer().getOnlinePlayers()) {
+            createPlayerTask(player);
+        }
     }
 
     public void loadItems() {

@@ -49,16 +49,31 @@ public class NBTUtil {
     public static NBTTagCompound getOrCreateTag(ItemStack stack, String path) {
         try {
             NBTTagCompound tag = ((net.minecraft.server.v1_12_R1.ItemStack) handle.get(stack)).getTag();
+            System.out.println("root tag:" + tag);
             if (tag == null) {
                 tag = new NBTTagCompound();
                 setTag(stack, tag);
             }
             if (path != null && !path.isEmpty()) {
                 NBTTagCompound child = tag.getCompound(path);
-                if (child == null) {
-                    child = new NBTTagCompound();
-                    tag.set(path, child);
-                }
+                System.out.println("child tag:" + tag);
+                tag.set(path, child);
+                return child;
+            }
+            return tag;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return new NBTTagCompound();
+        }
+    }
+
+    public static NBTTagCompound getTag(ItemStack stack, String path) {
+        try {
+            NBTTagCompound tag = ((net.minecraft.server.v1_12_R1.ItemStack) handle.get(stack)).getTag();
+            if (tag == null) return null;
+            if (path != null && !path.isEmpty()) {
+                NBTTagCompound child = tag.getCompound(path);
+                if (child == null) return null;
                 return child;
             }
             return tag;
@@ -69,8 +84,31 @@ public class NBTUtil {
     }
 
     public static Attrib getOrCreateAttrib(org.bukkit.inventory.ItemStack stack) {
-        Attrib attrib = new Attrib();
         NBTTagCompound tag = getOrCreateTag(stack, "attrib");
+        Attrib attrib = new Attrib();
+        attrib.globalId = tag.getInt("globalId");
+        attrib.active = tag.getBoolean("active");
+        attrib.name = tag.getString("name");
+        attrib.attack = tag.getInt("attack");
+        attrib.manaAttack = tag.getInt("manaAttack");
+        attrib.critChance = tag.getFloat("critChance");
+        attrib.critDamage = tag.getFloat("critDamage");
+        attrib.walkspeed = tag.getFloat("walkspeed");
+        attrib.blockChance = tag.getFloat("blockChance");
+        attrib.lastBlock = tag.getLong("lastBlock");
+        attrib.dodgeChance = tag.getFloat("dodgeChance");
+        attrib.lastDodge = tag.getLong("lastDodge");
+        attrib.suckRatio = tag.getFloat("suckRatio");
+        attrib.fireChance = tag.getFloat("fireChance");
+        attrib.freezeChance = tag.getFloat("freezeChance");
+        attrib.blockChance = tag.getFloat("blockChance");
+        return attrib;
+    }
+
+    public static Attrib getAttrib(org.bukkit.inventory.ItemStack stack) {
+        NBTTagCompound tag = getTag(stack, "attrib");
+        if (tag == null || !tag.hasKey("active")) return null;
+        Attrib attrib = new Attrib();
         attrib.globalId = tag.getInt("globalId");
         attrib.active = tag.getBoolean("active");
         attrib.name = tag.getString("name");

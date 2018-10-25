@@ -249,7 +249,7 @@ public final class CommandCSI {
                             return;
                         }
                         if (attrib.globalId > 0) {
-                            Attrib global = getAttrib(attrib.globalId);
+                            Attrib global = getGlobalAttrib(attrib.globalId);
                             if (global != null) {
                                 try {
                                     int value = Integer.valueOf(args.first());
@@ -277,7 +277,7 @@ public final class CommandCSI {
                 } else {
                     stack.get(ItemAttrib.class).ifPresent(attrib -> {
                         if (attrib.globalId > 0) {
-                            Attrib global = getAttrib(attrib.globalId);
+                            Attrib global = getGlobalAttrib(attrib.globalId);
                             if (global != null) {
                                 manager.sendKey(player, "global.get" + Name, fun.apply(global));
                             } else manager.sendKey(player, "idNotExist");
@@ -295,7 +295,7 @@ public final class CommandCSI {
                 if (args.notEmpty()) {
                     stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
                         if (attrib.globalId > 0) {
-                            Attrib global = getAttrib(attrib.globalId);
+                            Attrib global = getGlobalAttrib(attrib.globalId);
                             if (global != null) {
                                 try {
                                     float value = Float.valueOf(args.first());
@@ -323,7 +323,7 @@ public final class CommandCSI {
                 } else {
                     stack.get(ItemAttrib.class).ifPresent(attrib -> {
                         if (attrib.globalId > 0) {
-                            Attrib global = getAttrib(attrib.globalId);
+                            Attrib global = getGlobalAttrib(attrib.globalId);
                             if (global != null) {
                                 manager.sendKey(player, "global.get" + Name, fun.apply(global));
                             } else manager.sendKey(player, "idNotExist");
