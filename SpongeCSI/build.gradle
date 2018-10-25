@@ -23,6 +23,12 @@ plugins {
     id 'net.minecrell.vanillagradle.server' version '2.2-6'
 }
 
+sponge {
+    plugin {
+        id = 'customitem'
+    }
+}
+
 dependencies {
     compile 'org.soraworld:violet-sponge:2.3.7'
     compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'

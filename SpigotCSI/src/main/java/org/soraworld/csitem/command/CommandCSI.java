@@ -1,7 +1,9 @@
 package org.soraworld.csitem.command;
 
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.manager.AttribManager;
 import org.soraworld.violet.command.Args;
@@ -12,8 +14,19 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static org.soraworld.csitem.manager.CSIManager.*;
+import static org.soraworld.csitem.nbt.NBTUtil.getOrCreateTag;
 
 public final class CommandCSI {
+
+    @Sub(onlyPlayer = true)
+    public static void nbt(SpigotCommand self, CommandSender sender, Args args) {
+        AttribManager manager = ((AttribManager) self.manager);
+        Player player = (Player) sender;
+        ItemStack stack = player.getInventory().getItemInMainHand();
+        NBTTagCompound tag = getOrCreateTag(stack);
+        tag.setString("key1", player.getLocation().toString());
+        manager.send(player, "key1 set to " + player.getLocation().toString());
+    }
 
     @Sub(path = "global", virtual = true, perm = "admin", aliases = {"g"}, tabs = {"id", "create", "remove"})
     public static void global(SpigotCommand self, CommandSender sender, Args args) {
