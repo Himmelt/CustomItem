@@ -40,7 +40,7 @@ public class EventListener {
     public void onPlayerInteract(InteractItemEvent.Primary event, @First Player player) {
         player.getItemInHand(event.getHandType()).ifPresent(stack -> {
             stack.get(ItemAttrib.class).ifPresent(attrib -> {
-                if (attrib.globalId >= 0) {
+                if (attrib.globalId > 0) {
                     player.sendMessage(Text.of("using global " + attrib.globalId));
                 } else if (!attrib.active) {
                     attrib.active = true;

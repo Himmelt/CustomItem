@@ -4,9 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.soraworld.csitem.data.Attrib;
 
 import java.util.UUID;
 
+import static org.soraworld.csitem.nbt.NBTUtil.getOrCreateAttrib;
 import static org.soraworld.violet.nms.Version.v1_12_R1;
 
 public class PlayerTickTask implements Runnable {
@@ -42,8 +44,7 @@ public class PlayerTickTask implements Runnable {
             final State state = new State();
 
             // Check ItemInHand
-            ItemStack stack = player.getInventory().getItemInMainHand();
-            if (stack != null && !stack.getType().equals(Material.AIR)) fetchState(stack, state);
+            fetchState(player.getInventory().getItemInMainHand(), state);
 
             // Check Armors
             fetchState(player.getEquipment().getHelmet(), state);
@@ -57,6 +58,10 @@ public class PlayerTickTask implements Runnable {
 
     private void fetchState(ItemStack stack, State state) {
         // TODO 提取属性
+        if (stack != null && stack.getType() != Material.AIR) {
+            Attrib attrib = getOrCreateAttrib(stack);
+            state.append(attrib);
+        }
     }
 
     public void updateModifier(State state) {
@@ -66,11 +71,16 @@ public class PlayerTickTask implements Runnable {
         double maxHealth = 0.0D;
         double knockResist = 0.0D;
         double moveSpeed = 0.0D;
-        double flySpeed = 0.0D;
+        //double flySpeed = 0.0D;
         double attackDamage = 0.0D;
         double attackSpeed = 0.0D;
         double armor = 0.0D;
         double armorToughness = 0.0D;
         double luck = 0.0D;
+
+        void append(Attrib attrib) {
+            moveSpeed += attrib.walkspeed;
+            attackDamage += attrib.attack;
+        }
     }
 }

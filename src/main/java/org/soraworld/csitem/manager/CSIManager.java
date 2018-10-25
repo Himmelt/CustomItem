@@ -18,7 +18,7 @@ public class CSIManager {
 
     private static HashMap<String, Integer> names = new HashMap<>();
     private static HashMap<Integer, Attrib> items = new HashMap<>();
-    private static int NEXT_ID = 0;
+    private static int NEXT_ID = 1;
 
     public CSIManager(Path file, Options options) {
         this.itemsFile = file;
@@ -30,10 +30,11 @@ public class CSIManager {
         try {
             node.load(false);
             items.clear();
-            int maxId = -1;
+            int maxId = 0;
             for (String key : node.keys()) {
                 try {
                     int id = Integer.valueOf(key);
+                    if (id <= 0) continue;
                     Attrib attrib = deserialize(node.get(key), id);
                     if (attrib != null) {
                         items.put(attrib.globalId, attrib);
@@ -77,18 +78,22 @@ public class CSIManager {
     }
 
     public static Attrib getOrCreate(int id) {
+        if (id <= 0) return null;
         return items.computeIfAbsent(id, Attrib::new);
     }
 
     public static Attrib getOrCreate(int id, String name) {
+        if (id <= 0) return null;
         return items.computeIfAbsent(id, integer -> new Attrib(integer, name));
     }
 
     public static boolean createAttrib(int id) {
+        if (id <= 0) return false;
         return createAttrib(id, "");
     }
 
     public static boolean createAttrib(int id, String name) {
+        if (id <= 0) return false;
         if (!items.containsKey(id)) {
             items.put(id, new Attrib(id, name));
             return true;

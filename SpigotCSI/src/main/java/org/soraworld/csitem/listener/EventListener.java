@@ -1,6 +1,7 @@
 package org.soraworld.csitem.listener;
 
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,12 +14,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.data.PlayerAttrib;
 import org.soraworld.csitem.manager.AttribManager;
 
 import java.util.Random;
 
-import static org.soraworld.csitem.nbt.NBTUtil.getOrCreateTag;
+import static org.soraworld.csitem.nbt.NBTUtil.*;
 
 public class EventListener implements Listener {
 
@@ -31,18 +33,19 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        /*player.getItemInHand(event.getHandType()).ifPresent(stack -> {
-            stack.get(ItemAttrib.class).ifPresent(attrib -> {
-                if (attrib.globalId >= 0) {
-                    player.sendMessage(Text.of("using global " + attrib.globalId));
-                } else if (!attrib.active) {
-                    attrib.active = true;
-                    stack.offer(attrib);
-                    player.setItemInHand(event.getHandType(), stack);
-                    player.sendMessage(Text.of("item activated!"));
-                }
-            });
-        });*/
+        ItemStack stack = event.getItem();
+        Player player = event.getPlayer();
+        if (stack != null && stack.getType() != Material.AIR) {
+            Attrib attrib = getOrCreateAttrib(stack);
+            if (attrib.globalId > 0) {
+                player.sendMessage("using global " + attrib.globalId);
+            } else if (!attrib.active) {
+                attrib.active = true;
+                offerAttrib(stack, attrib);
+                //player.setItemInHand(event.getHandType(), stack);
+                player.sendMessage("item activated!");
+            }
+        }
     }
 
     @EventHandler
@@ -125,7 +128,7 @@ public class EventListener implements Listener {
 
         if (stack != null) {
             event.getPlayer().sendMessage("PlayerDropItemEvent hashcode " + stack.hashCode());
-            NBTTagCompound tag = getOrCreateTag(stack);
+            NBTTagCompound tag = getOrCreateTag(stack, "attrib");
             event.getPlayer().sendMessage("PlayerDropItemEvent has key " + tag.hasKey("key1"));
         }
     }
@@ -134,7 +137,7 @@ public class EventListener implements Listener {
     public void onDestroyChest(EntityPickupItemEvent event) {
         ItemStack stack = event.getItem().getItemStack();
         System.out.println("EntityPickupItemEvent hashcode: " + stack.hashCode());
-        NBTTagCompound tag = getOrCreateTag(stack);
+        NBTTagCompound tag = getOrCreateTag(stack, "attrib");
         System.out.println("EntityPickupItemEvent has key " + tag.hasKey("key1"));
     }
 
@@ -147,7 +150,7 @@ public class EventListener implements Listener {
     public void onDestroyChest(InventoryPickupItemEvent event) {
         ItemStack stack = event.getItem().getItemStack();
         System.out.println("InventoryPickupItemEvent hashcode: " + stack.hashCode());
-        NBTTagCompound tag = getOrCreateTag(stack);
+        NBTTagCompound tag = getOrCreateTag(stack, "attrib");
         System.out.println("InventoryPickupItemEvent has key " + tag.hasKey("key1"));
     }
 
@@ -155,7 +158,7 @@ public class EventListener implements Listener {
     public void onItemSpawnEvent(ItemSpawnEvent event) {
         ItemStack stack = event.getEntity().getItemStack();
         System.out.println("ItemSpawnEvent hashcode: " + stack.hashCode());
-        NBTTagCompound tag = getOrCreateTag(stack);
+        NBTTagCompound tag = getOrCreateTag(stack, "attrib");
         System.out.println("ItemSpawnEvent has key " + tag.hasKey("key1"));
     }
 

@@ -23,7 +23,7 @@ public final class CommandCSI {
         AttribManager manager = ((AttribManager) self.manager);
         Player player = (Player) sender;
         ItemStack stack = player.getInventory().getItemInMainHand();
-        NBTTagCompound tag = getOrCreateTag(stack);
+        NBTTagCompound tag = getOrCreateTag(stack, "attrib");
         tag.setString("key1", player.getLocation().toString());
         manager.send(player, "key1 set to " + player.getLocation().toString());
     }
@@ -258,7 +258,7 @@ public final class CommandCSI {
                             }
                             return;
                         }
-                        if (attrib.globalId >= 0) {
+                        if (attrib.globalId > 0) {
                             Attrib global = getAttrib(attrib.globalId);
                             if (global != null) {
                                 try {
@@ -286,7 +286,7 @@ public final class CommandCSI {
                     });
                 } else {
                     stack.get(ItemAttrib.class).ifPresent(attrib -> {
-                        if (attrib.globalId >= 0) {
+                        if (attrib.globalId > 0) {
                             Attrib global = getAttrib(attrib.globalId);
                             if (global != null) {
                                 manager.sendKey(player, "global.get" + Name, fun.apply(global));
@@ -304,7 +304,7 @@ public final class CommandCSI {
             if (stack.getType() != ItemTypes.AIR) {
                 if (args.notEmpty()) {
                     stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
-                        if (attrib.globalId >= 0) {
+                        if (attrib.globalId > 0) {
                             Attrib global = getAttrib(attrib.globalId);
                             if (global != null) {
                                 try {
@@ -332,7 +332,7 @@ public final class CommandCSI {
                     });
                 } else {
                     stack.get(ItemAttrib.class).ifPresent(attrib -> {
-                        if (attrib.globalId >= 0) {
+                        if (attrib.globalId > 0) {
                             Attrib global = getAttrib(attrib.globalId);
                             if (global != null) {
                                 manager.sendKey(player, "global.get" + Name, fun.apply(global));

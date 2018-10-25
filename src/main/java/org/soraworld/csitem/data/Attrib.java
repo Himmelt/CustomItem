@@ -5,7 +5,7 @@ import org.soraworld.hocon.node.*;
 @Serializable
 public class Attrib {
 
-    public int globalId = -1;
+    public int globalId = 0;
     public boolean active = false;
 
     @Setting
