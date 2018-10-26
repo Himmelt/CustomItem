@@ -24,6 +24,7 @@ public class Attrib {
     @Setting
     public float dodgeChance = 0;
     public long lastDodge = 0;
+    public double dodgeX, dodgeZ;
     @Setting
     public float suckRatio = 0;
     @Setting

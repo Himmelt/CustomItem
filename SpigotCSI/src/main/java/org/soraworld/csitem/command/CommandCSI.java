@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.manager.AttribManager;
 import org.soraworld.csitem.nbt.NBTUtil;
@@ -19,6 +20,20 @@ import static org.soraworld.csitem.manager.CSIManager.*;
 import static org.soraworld.csitem.nbt.NBTUtil.*;
 
 public final class CommandCSI {
+
+    @Sub(onlyPlayer = true)
+    public static void vec(SpigotCommand self, CommandSender sender, Args args) {
+        AttribManager manager = ((AttribManager) self.manager);
+        Player player = (Player) sender;
+        if (args.size() == 2) {
+            double x = Double.valueOf(args.first());
+            double z = Double.valueOf(args.get(1));
+            Vector d = player.getLocation().getDirection().normalize();
+            Vector v = new Vector(x * d.getX() + z * d.getZ(), 0, x * d.getZ() - z * d.getX());
+            player.sendMessage("D:" + d + "|V:" + v);
+            player.setVelocity(v);
+        }
+    }
 
     @Sub(onlyPlayer = true)
     public static void nbt(SpigotCommand self, CommandSender sender, Args args) {
@@ -184,6 +199,30 @@ public final class CommandCSI {
         );
     }
 
+    @Sub(perm = "admin", onlyPlayer = true, usage = "/csi dodgex x")
+    public static void dodgex(SpigotCommand self, CommandSender sender, Args args) {
+        getSetDouble(
+                (AttribManager) self.manager,
+                (Player) sender,
+                args, "DodgeX",
+                0, 100,
+                (attrib, value) -> attrib.dodgeX = value,
+                attrib -> attrib.dodgeX
+        );
+    }
+
+    @Sub(perm = "admin", onlyPlayer = true, usage = "/csi dodgez z")
+    public static void dodgez(SpigotCommand self, CommandSender sender, Args args) {
+        getSetDouble(
+                (AttribManager) self.manager,
+                (Player) sender,
+                args, "DodgeZ",
+                0, 100,
+                (attrib, value) -> attrib.dodgeZ = value,
+                attrib -> attrib.dodgeZ
+        );
+    }
+
     @Sub(perm = "admin", onlyPlayer = true, usage = "/csi suck [ratio%]")
     public static void suck(SpigotCommand self, CommandSender sender, Args args) {
         getSetInt(
@@ -314,7 +353,7 @@ public final class CommandCSI {
                             manager.saveItems();
                             manager.sendKey(player, "global.set" + Name, value);
                         } catch (NumberFormatException ignored) {
-                            manager.sendKey(player, "invalidInt");
+                            manager.sendKey(player, "invalidFloat");
                         }
                     } else manager.sendKey(player, "idNotExist");
                 } else {
@@ -327,6 +366,51 @@ public final class CommandCSI {
                         //player.setItemInHand(HandTypes.MAIN_HAND, stack);
                     } catch (NumberFormatException ignored) {
                         manager.sendKey(player, "invalidFloat");
+                    }
+                }
+            } else {
+                Attrib attrib = NBTUtil.getAttrib(stack);
+                if (attrib != null) {
+                    if (attrib.globalId > 0) {
+                        Attrib global = getGlobalAttrib(attrib.globalId);
+                        if (global != null) {
+                            manager.sendKey(player, "global.get" + Name, fun.apply(global));
+                        } else manager.sendKey(player, "idNotExist");
+                    } else manager.sendKey(player, "get" + Name, fun.apply(attrib));
+
+                } else manager.sendKey(player, "noAttrib");
+            }
+        } else manager.sendKey(player, "emptyHand");
+    }
+
+    private static void getSetDouble(AttribManager manager, Player player, Args args, String Name, double min, double max, BiConsumer<Attrib, Double> consumer, Function<Attrib, Double> fun) {
+        ItemStack stack = player.getInventory().getItemInMainHand();
+        if (stack != null && stack.getType() != Material.AIR) {
+            if (args.notEmpty()) {
+                Attrib attrib = getOrCreateAttrib(stack);
+                if (attrib.globalId > 0) {
+                    Attrib global = getGlobalAttrib(attrib.globalId);
+                    if (global != null) {
+                        try {
+                            double value = Double.valueOf(args.first());
+                            value = value < min ? min : value > max ? max : value;
+                            consumer.accept(global, value);
+                            manager.saveItems();
+                            manager.sendKey(player, "global.set" + Name, value);
+                        } catch (NumberFormatException ignored) {
+                            manager.sendKey(player, "invalidDouble");
+                        }
+                    } else manager.sendKey(player, "idNotExist");
+                } else {
+                    try {
+                        double value = Float.valueOf(args.first());
+                        value = value < min ? min : value > max ? max : value;
+                        consumer.accept(attrib, value);
+                        offerAttrib(stack, attrib);
+                        manager.sendKey(player, "set" + Name, value);
+                        //player.setItemInHand(HandTypes.MAIN_HAND, stack);
+                    } catch (NumberFormatException ignored) {
+                        manager.sendKey(player, "invalidDouble");
                     }
                 }
             } else {

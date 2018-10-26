@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.data.PlayerAttrib;
 import org.soraworld.csitem.manager.AttribManager;
@@ -79,16 +80,19 @@ public class EventListener implements Listener {
         if (target instanceof Player) {
             Player victim = (Player) target;
             PlayerAttrib attrib = getPlayerAttrib(victim);
+            System.out.println("dodgeChance:" + attrib.dodgeChance);
             if (attrib.dodgeChance > 0 && attrib.dodgeChance > random.nextFloat()) {
                 // TODO check & need cancel event ?
-                victim.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 2, true, false, false), true);
+                //victim.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 80, 2, true, false), true);
                 // TODO update lastDodge
+                victim.setVelocity(dodgeVec(attrib, victim));
+                System.out.println("setDamage 0");
                 event.setDamage(0.0D);
                 return;
             }
             if (attrib.blockChance > 0 && attrib.blockChance > random.nextFloat()) {
                 // TODO check & need cancel event ?
-                victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 2, true, false, false), true);
+                victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 2, true, false), true);
                 // TODO update lastBlock
                 event.setDamage(0.0D);
                 return;
@@ -144,5 +148,11 @@ public class EventListener implements Listener {
             }
         }
         return pa;
+    }
+
+    private static Vector dodgeVec(Attrib attrib, Player player) {
+        Vector d = player.getLocation().getDirection().normalize();
+        return new Vector(attrib.dodgeX * d.getX() + attrib.dodgeZ * d.getZ(), 0,
+                attrib.dodgeX * d.getZ() - attrib.dodgeZ * d.getX());
     }
 }

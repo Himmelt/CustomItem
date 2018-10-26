@@ -8,6 +8,8 @@ public class PlayerAttrib extends Attrib {
         this.lastBlock += attrib.lastBlock;
         this.dodgeChance += attrib.dodgeChance;
         this.lastDodge += attrib.lastDodge;
+        this.dodgeX += attrib.dodgeX;
+        this.dodgeZ += attrib.dodgeZ;
         this.suckRatio += attrib.suckRatio;
         this.fireChance += attrib.fireChance;
         this.freezeChance += attrib.freezeChance;

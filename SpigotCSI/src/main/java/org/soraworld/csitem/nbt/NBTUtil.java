@@ -49,14 +49,12 @@ public class NBTUtil {
     public static NBTTagCompound getOrCreateTag(ItemStack stack, String path) {
         try {
             NBTTagCompound tag = ((net.minecraft.server.v1_12_R1.ItemStack) handle.get(stack)).getTag();
-            System.out.println("root tag:" + tag);
             if (tag == null) {
                 tag = new NBTTagCompound();
                 setTag(stack, tag);
             }
             if (path != null && !path.isEmpty()) {
                 NBTTagCompound child = tag.getCompound(path);
-                System.out.println("child tag:" + tag);
                 tag.set(path, child);
                 return child;
             }
@@ -98,6 +96,8 @@ public class NBTUtil {
         attrib.lastBlock = tag.getLong("lastBlock");
         attrib.dodgeChance = tag.getFloat("dodgeChance");
         attrib.lastDodge = tag.getLong("lastDodge");
+        attrib.dodgeX = tag.getDouble("dodgeX");
+        attrib.dodgeZ = tag.getDouble("dodgeZ");
         attrib.suckRatio = tag.getFloat("suckRatio");
         attrib.fireChance = tag.getFloat("fireChance");
         attrib.freezeChance = tag.getFloat("freezeChance");
@@ -121,6 +121,8 @@ public class NBTUtil {
         attrib.lastBlock = tag.getLong("lastBlock");
         attrib.dodgeChance = tag.getFloat("dodgeChance");
         attrib.lastDodge = tag.getLong("lastDodge");
+        attrib.dodgeX = tag.getDouble("dodgeX");
+        attrib.dodgeZ = tag.getDouble("dodgeZ");
         attrib.suckRatio = tag.getFloat("suckRatio");
         attrib.fireChance = tag.getFloat("fireChance");
         attrib.freezeChance = tag.getFloat("freezeChance");
@@ -142,6 +144,8 @@ public class NBTUtil {
         tag.setLong("lastBlock", attrib.lastBlock);
         tag.setFloat("dodgeChance", attrib.dodgeChance);
         tag.setLong("lastDodge", attrib.lastDodge);
+        tag.setDouble("dodgeX", attrib.dodgeX);
+        tag.setDouble("dodgeX", attrib.dodgeZ);
         tag.setFloat("suckRatio", attrib.suckRatio);
         tag.setFloat("fireChance", attrib.fireChance);
         tag.setFloat("freezeChance", attrib.freezeChance);
