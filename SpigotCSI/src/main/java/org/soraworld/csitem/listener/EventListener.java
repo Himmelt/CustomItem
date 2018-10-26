@@ -14,9 +14,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.data.PlayerAttrib;
 import org.soraworld.csitem.manager.AttribManager;
+import org.soraworld.csitem.nbt.NBTUtil;
 
 import java.util.Random;
 
@@ -56,57 +60,38 @@ public class EventListener implements Listener {
     public void onAttackEntity(EntityDamageByEntityEvent event) {
         Entity cause = event.getDamager();
         Entity target = event.getEntity();
-        /*if (cause instanceof Player) {
+        double damage = event.getDamage();
+        if (cause instanceof Player) {
             Player attacker = (Player) cause;
-            attacker.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
-                stack.get(ItemAttrib.class).ifPresent(attrib -> {
+            ItemStack stack = attacker.getInventory().getItemInMainHand();
+            if (stack != null && stack.getType() != Material.AIR) {
+                Attrib attrib = NBTUtil.getAttrib(stack);
+                if (attrib != null) {
                     if (attrib.critChance > 0 && attrib.critChance > random.nextFloat()) {
-                        event.addDamageModifierAfter(
-                                DamageModifier.builder()
-                                        .cause(Cause.builder()
-                                                .append(manager.getPlugin())
-                                                .build(EventContext.empty()))
-                                        .item(stack)
-                                        .type(DamageModifierTypes.CRITICAL_HIT)
-                                        .build(),
-                                operand -> attrib.critDamage,
-                                Collections.singleton(DamageModifierTypes.CRITICAL_HIT)
-                        );
+                        damage += attrib.critDamage;
                     }
-                });
-            });
+                }
+            }
         }
         if (target instanceof Player) {
             Player victim = (Player) target;
             PlayerAttrib attrib = getPlayerAttrib(victim);
             if (attrib.dodgeChance > 0 && attrib.dodgeChance > random.nextFloat()) {
                 // TODO check & need cancel event ?
-                victim.getOrCreate(PotionEffectData.class).ifPresent(data -> {
-                    // TODO check override exist effects ?
-                    data.addElement(PotionEffect.builder()
-                            .potionType(PotionEffectTypes.SPEED)
-                            .duration(40).amplifier(2).ambience(true).particles(false)
-                            .build());
-                    victim.offer(data);
-                });
+                victim.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 2, true, false, false), true);
                 // TODO update lastDodge
-                event.setBaseOutputDamage(0);
+                event.setDamage(0.0D);
                 return;
             }
             if (attrib.blockChance > 0 && attrib.blockChance > random.nextFloat()) {
                 // TODO check & need cancel event ?
-                victim.getOrCreate(PotionEffectData.class).ifPresent(data -> {
-                    // TODO check override exist effects ?
-                    data.addElement(PotionEffect.builder()
-                            .potionType(PotionEffectTypes.SLOWNESS)
-                            .duration(40).amplifier(2).ambience(true).particles(false)
-                            .build());
-                    victim.offer(data);
-                });
+                victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 2, true, false, false), true);
                 // TODO update lastBlock
-                event.setBaseOutputDamage(0);
+                event.setDamage(0.0D);
+                return;
             }
-        }*/
+        }
+        event.setDamage(damage);
     }
 
     @EventHandler
@@ -169,89 +154,20 @@ public class EventListener implements Listener {
 
     private static PlayerAttrib getPlayerAttrib(Player player) {
         PlayerAttrib pa = new PlayerAttrib();
-        /*// TODO positive & negative attributes
-        // Check ItemInHand
-        player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
-            stack.get(ItemAttrib.class).ifPresent(attrib -> {
-                pa.critChance = attrib.critChance;
-                pa.critDamage = attrib.critDamage;
-                pa.blockChance = attrib.blockChance;
-                pa.lastBlock = attrib.lastBlock;
-                pa.dodgeChance = attrib.dodgeChance;
-                pa.lastDodge = attrib.lastDodge;
-                pa.suckRatio = attrib.suckRatio;
-                pa.fireChance = attrib.fireChance;
-                pa.freezeChance = attrib.freezeChance;
-                pa.poisonChance = attrib.poisonChance;
-                pa.bloodChance = attrib.bloodChance;
-            });
-        });
-
-        // Check Armors
-        player.getHelmet().ifPresent(stack -> {
-            // TODO fetch positive attributes state
-            stack.get(ItemAttrib.class).ifPresent(attrib -> {
-                pa.critChance += attrib.critChance;
-                pa.critDamage += attrib.critDamage;
-                pa.blockChance += attrib.blockChance;
-                pa.lastBlock += attrib.lastBlock;
-                pa.dodgeChance += attrib.dodgeChance;
-                pa.lastDodge += attrib.lastDodge;
-                pa.suckRatio += attrib.suckRatio;
-                pa.fireChance += attrib.fireChance;
-                pa.freezeChance += attrib.freezeChance;
-                pa.poisonChance += attrib.poisonChance;
-                pa.bloodChance += attrib.bloodChance;
-            });
-        });
-        player.getChestplate().ifPresent(stack -> {
-            // TODO fetch positive attributes state
-            stack.get(ItemAttrib.class).ifPresent(attrib -> {
-                pa.critChance += attrib.critChance;
-                pa.critDamage += attrib.critDamage;
-                pa.blockChance += attrib.blockChance;
-                pa.lastBlock += attrib.lastBlock;
-                pa.dodgeChance += attrib.dodgeChance;
-                pa.lastDodge += attrib.lastDodge;
-                pa.suckRatio += attrib.suckRatio;
-                pa.fireChance += attrib.fireChance;
-                pa.freezeChance += attrib.freezeChance;
-                pa.poisonChance += attrib.poisonChance;
-                pa.bloodChance += attrib.bloodChance;
-            });
-        });
-        player.getLeggings().ifPresent(stack -> {
-            // TODO fetch positive attributes state
-            stack.get(ItemAttrib.class).ifPresent(attrib -> {
-                pa.critChance += attrib.critChance;
-                pa.critDamage += attrib.critDamage;
-                pa.blockChance += attrib.blockChance;
-                pa.lastBlock += attrib.lastBlock;
-                pa.dodgeChance += attrib.dodgeChance;
-                pa.lastDodge += attrib.lastDodge;
-                pa.suckRatio += attrib.suckRatio;
-                pa.fireChance += attrib.fireChance;
-                pa.freezeChance += attrib.freezeChance;
-                pa.poisonChance += attrib.poisonChance;
-                pa.bloodChance += attrib.bloodChance;
-            });
-        });
-        player.getBoots().ifPresent(stack -> {
-            // TODO fetch positive attributes state
-            stack.get(ItemAttrib.class).ifPresent(attrib -> {
-                pa.critChance += attrib.critChance;
-                pa.critDamage += attrib.critDamage;
-                pa.blockChance += attrib.blockChance;
-                pa.lastBlock += attrib.lastBlock;
-                pa.dodgeChance += attrib.dodgeChance;
-                pa.lastDodge += attrib.lastDodge;
-                pa.suckRatio += attrib.suckRatio;
-                pa.fireChance += attrib.fireChance;
-                pa.freezeChance += attrib.freezeChance;
-                pa.poisonChance += attrib.poisonChance;
-                pa.bloodChance += attrib.bloodChance;
-            });
-        });*/
+        // TODO positive & negative attributes
+        PlayerInventory inv = player.getInventory();
+        ItemStack stack;
+        for (int i = 0; i < 5; i++) {
+            if (i == 0) stack = inv.getItemInMainHand();
+            else if (i == 1) stack = inv.getHelmet();
+            else if (i == 2) stack = inv.getChestplate();
+            else if (i == 3) stack = inv.getLeggings();
+            else stack = inv.getBoots();
+            if (stack != null && stack.getType() != Material.AIR) {
+                Attrib attrib = NBTUtil.getAttrib(stack);
+                if (attrib != null) pa.append(attrib);
+            }
+        }
         return pa;
     }
 }

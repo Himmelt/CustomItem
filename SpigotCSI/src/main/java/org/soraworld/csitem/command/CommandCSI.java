@@ -300,48 +300,47 @@ public final class CommandCSI {
     }
 
     private static void getSetFloat(AttribManager manager, Player player, Args args, String Name, float min, float max, BiConsumer<Attrib, Float> consumer, Function<Attrib, Float> fun) {
-        /*player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
-            if (stack.getType() != ItemTypes.AIR) {
-                if (args.notEmpty()) {
-                    stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
-                        if (attrib.globalId > 0) {
-                            Attrib global = getAttrib(attrib.globalId);
-                            if (global != null) {
-                                try {
-                                    float value = Float.valueOf(args.first());
-                                    value = value < min ? min : value > max ? max : value;
-                                    consumer.accept(global, value);
-                                    manager.saveItems();
-                                    manager.sendKey(player, "global.set" + Name, value);
-                                } catch (NumberFormatException ignored) {
-                                    manager.sendKey(player, "invalidInt");
-                                }
-                            } else manager.sendKey(player, "idNotExist");
-                        } else {
-                            try {
-                                float value = Float.valueOf(args.first());
-                                value = value < min ? min : value > max ? max : value;
-                                consumer.accept(attrib, value);
-                                stack.offer(attrib);
-                                manager.sendKey(player, "set" + Name, value);
-                                player.setItemInHand(HandTypes.MAIN_HAND, stack);
-                            } catch (NumberFormatException ignored) {
-                                manager.sendKey(player, "invalidFloat");
-                            }
+        ItemStack stack = player.getInventory().getItemInMainHand();
+        if (stack != null && stack.getType() != Material.AIR) {
+            if (args.notEmpty()) {
+                Attrib attrib = getOrCreateAttrib(stack);
+                if (attrib.globalId > 0) {
+                    Attrib global = getGlobalAttrib(attrib.globalId);
+                    if (global != null) {
+                        try {
+                            float value = Float.valueOf(args.first());
+                            value = value < min ? min : value > max ? max : value;
+                            consumer.accept(global, value);
+                            manager.saveItems();
+                            manager.sendKey(player, "global.set" + Name, value);
+                        } catch (NumberFormatException ignored) {
+                            manager.sendKey(player, "invalidInt");
                         }
-                    });
+                    } else manager.sendKey(player, "idNotExist");
                 } else {
-                    stack.get(ItemAttrib.class).ifPresent(attrib -> {
-                        if (attrib.globalId > 0) {
-                            Attrib global = getAttrib(attrib.globalId);
-                            if (global != null) {
-                                manager.sendKey(player, "global.get" + Name, fun.apply(global));
-                            } else manager.sendKey(player, "idNotExist");
-                        } else manager.sendKey(player, "get" + Name, fun.apply(attrib));
-                    });
-                    //manager.sendKey(player, "noAttrib");
+                    try {
+                        float value = Float.valueOf(args.first());
+                        value = value < min ? min : value > max ? max : value;
+                        consumer.accept(attrib, value);
+                        offerAttrib(stack, attrib);
+                        manager.sendKey(player, "set" + Name, value);
+                        //player.setItemInHand(HandTypes.MAIN_HAND, stack);
+                    } catch (NumberFormatException ignored) {
+                        manager.sendKey(player, "invalidFloat");
+                    }
                 }
-            } else manager.sendKey(player, "emptyHand");
-        });*/
+            } else {
+                Attrib attrib = NBTUtil.getAttrib(stack);
+                if (attrib != null) {
+                    if (attrib.globalId > 0) {
+                        Attrib global = getGlobalAttrib(attrib.globalId);
+                        if (global != null) {
+                            manager.sendKey(player, "global.get" + Name, fun.apply(global));
+                        } else manager.sendKey(player, "idNotExist");
+                    } else manager.sendKey(player, "get" + Name, fun.apply(attrib));
+
+                } else manager.sendKey(player, "noAttrib");
+            }
+        } else manager.sendKey(player, "emptyHand");
     }
 }
