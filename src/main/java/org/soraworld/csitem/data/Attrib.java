@@ -24,7 +24,14 @@ public class Attrib {
     @Setting
     public float dodgeChance = 0;
     public long lastDodge = 0;
-    public double dodgeX, dodgeZ;
+    /**
+     * 闪避 向玩家朝向(面前方为正方向)位移量 .
+     */
+    public double dodgeX;
+    /**
+     * 闪避 向玩家侧向(左手方为正方向)位移量 .
+     */
+    public double dodgeZ;
     @Setting
     public float suckRatio = 0;
     @Setting
