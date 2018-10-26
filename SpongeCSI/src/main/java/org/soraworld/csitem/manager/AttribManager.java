@@ -19,7 +19,7 @@ public class AttribManager extends SpongeManager {
     @Setting(comment = "comment.firstGlobal")
     private boolean firstGlobal = true;
     @Setting(comment = "comment.updateTicks")
-    private byte updateTicks = 10;
+    private int updateTicks = 10;
 
     private final CSIManager csi;
 

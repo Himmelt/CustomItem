@@ -1,7 +1,5 @@
 package org.soraworld.csitem;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.soraworld.csitem.command.CommandCSI;
 import org.soraworld.csitem.listener.EventListener;
@@ -31,11 +29,5 @@ public class CustomItem extends SpigotPlugin {
         command.extractSub(CommandCSI.class);
         command.setUsage("/csitem ....");
         register(this, command);
-    }
-
-    public void afterEnable() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            ((AttribManager) manager).createPlayerTask(player);
-        }
     }
 }

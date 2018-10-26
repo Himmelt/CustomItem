@@ -3,7 +3,6 @@ package org.soraworld.csitem.manager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.soraworld.csitem.task.PlayerTickTask;
 import org.soraworld.hocon.node.Setting;
 import org.soraworld.violet.manager.SpigotManager;
 import org.soraworld.violet.plugin.SpigotPlugin;
@@ -18,7 +17,7 @@ public class AttribManager extends SpigotManager {
     @Setting(comment = "comment.firstGlobal")
     private boolean firstGlobal = true;
     @Setting(comment = "comment.updateTicks")
-    private byte updateTicks = 10;
+    private int updateTicks = 10;
 
     private final CSIManager csi;
 
@@ -37,6 +36,10 @@ public class AttribManager extends SpigotManager {
         return super.save();
     }
 
+    public void afterLoad() {
+        Bukkit.getServer().getOnlinePlayers().forEach(this::createPlayerTask);
+    }
+
     public void loadItems() {
         csi.loadItems();
     }
@@ -50,8 +53,7 @@ public class AttribManager extends SpigotManager {
     }
 
     public void createPlayerTask(Player player) {
-        PlayerTickTask task = createTask(player);
-        task.setTaskId(Bukkit.getScheduler().runTaskTimer(plugin, task, updateTicks, updateTicks).getTaskId());
+        createTask(player, plugin, updateTicks);
     }
 
     public void showAttribInfo(CommandSender sender, int id) {
