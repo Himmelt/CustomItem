@@ -1,11 +1,9 @@
 package org.soraworld.csitem.command;
 
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.manager.AttribManager;
 import org.soraworld.csitem.nbt.NBTUtil;
@@ -17,33 +15,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static org.soraworld.csitem.manager.CSIManager.*;
-import static org.soraworld.csitem.nbt.NBTUtil.*;
+import static org.soraworld.csitem.nbt.NBTUtil.getOrCreateAttrib;
+import static org.soraworld.csitem.nbt.NBTUtil.offerAttrib;
 
 public final class CommandCSI {
-
-    @Sub(onlyPlayer = true)
-    public static void vec(SpigotCommand self, CommandSender sender, Args args) {
-        AttribManager manager = ((AttribManager) self.manager);
-        Player player = (Player) sender;
-        if (args.size() == 2) {
-            double x = Double.valueOf(args.first());
-            double z = Double.valueOf(args.get(1));
-            Vector d = player.getLocation().getDirection().normalize();
-            Vector v = new Vector(x * d.getX() + z * d.getZ(), 0, x * d.getZ() - z * d.getX());
-            player.sendMessage("D:" + d + "|V:" + v);
-            player.setVelocity(v);
-        }
-    }
-
-    @Sub(onlyPlayer = true)
-    public static void nbt(SpigotCommand self, CommandSender sender, Args args) {
-        AttribManager manager = ((AttribManager) self.manager);
-        Player player = (Player) sender;
-        ItemStack stack = player.getInventory().getItemInMainHand();
-        NBTTagCompound tag = getOrCreateTag(stack, "attrib");
-        tag.setString("key1", player.getLocation().toString());
-        manager.send(player, "key1 set to " + player.getLocation().toString());
-    }
 
     @Sub(path = "global", virtual = true, perm = "admin", aliases = {"g"}, tabs = {"id", "create", "remove"})
     public static void global(SpigotCommand self, CommandSender sender, Args args) {
@@ -109,6 +84,30 @@ public final class CommandCSI {
                 manager.sendKey(sender, "global.removeSuccess");
             } else manager.sendKey(sender, "global.idNotExist");
         } else manager.sendKey(sender, "emptyArgs");
+    }
+
+    /**
+     * 给与指定id的物品(全局).
+     */
+    @Sub(path = "global.give", perm = "admin", usage = "/csi give <player|@p> <id|name>")
+    public static void global_give(SpigotCommand self, CommandSender sender, Args args) {
+
+    }
+
+    /**
+     * 列出全局物品的id和名字，等级和品质(点数).
+     */
+    @Sub(perm = "admin", usage = "/csi list [page]")
+    public static void list(SpigotCommand self, CommandSender sender, Args args) {
+
+    }
+
+    /**
+     * 给与指定id的物品(非全局).
+     */
+    @Sub(perm = "admin", usage = "/csi give <player|@p> <id|name>")
+    public static void give(SpigotCommand self, CommandSender sender, Args args) {
+
     }
 
     @Sub(perm = "admin", onlyPlayer = true, usage = "/csi attack [damage]")

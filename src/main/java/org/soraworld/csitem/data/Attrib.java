@@ -6,8 +6,11 @@ import org.soraworld.hocon.node.*;
 public class Attrib {
 
     public int globalId = 0;
-    public boolean active = false;
-
+    private boolean active = false;
+    @Setting
+    public int level = 0;
+    @Setting
+    public int points = 0;
     @Setting
     public String name = "";
     @Setting
@@ -101,6 +104,22 @@ public class Attrib {
         freezeChance = 0;
         poisonChance = 0;
         bloodChance = 0;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void active() {
+        if (!active) {
+            // TODO active
+
+            this.active = true;
+        }
     }
 
     public String toString() {

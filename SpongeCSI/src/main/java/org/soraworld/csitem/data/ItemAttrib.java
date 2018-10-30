@@ -58,7 +58,7 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
             reset();
 
             con.getInt(GLOBAL).ifPresent(i -> globalId = i);
-            con.getBoolean(ACTIVE).ifPresent(b -> active = b);
+            con.getBoolean(ACTIVE).ifPresent(this::setActive);
 
             con.getString(NAME).ifPresent(s -> name = s);
             con.getInt(ATTACK).ifPresent(i -> attack = i);
@@ -118,7 +118,7 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
     public DataContainer toContainer() {
         return DataContainer.createNew()
                 .set(GLOBAL, globalId)
-                .set(ACTIVE, active)
+                .set(ACTIVE, isActive())
 
                 .set(NAME, name)
                 .set(ATTACK, attack)
@@ -189,7 +189,7 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
                 ItemAttrib attrib = new ItemAttrib();
 
                 con.getInt(GLOBAL).ifPresent(i -> attrib.globalId = i);
-                con.getBoolean(ACTIVE).ifPresent(b -> attrib.active = b);
+                con.getBoolean(ACTIVE).ifPresent(attrib::setActive);
 
                 con.getString(NAME).ifPresent(s -> attrib.name = s);
                 con.getInt(ATTACK).ifPresent(i -> attrib.attack = i);

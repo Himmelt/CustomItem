@@ -42,8 +42,8 @@ public class EventListener {
             stack.get(ItemAttrib.class).ifPresent(attrib -> {
                 if (attrib.globalId > 0) {
                     player.sendMessage(Text.of("using global " + attrib.globalId));
-                } else if (!attrib.active) {
-                    attrib.active = true;
+                } else if (!attrib.isActive()) {
+                    attrib.active();
                     stack.offer(attrib);
                     player.setItemInHand(event.getHandType(), stack);
                     player.sendMessage(Text.of("item activated!"));

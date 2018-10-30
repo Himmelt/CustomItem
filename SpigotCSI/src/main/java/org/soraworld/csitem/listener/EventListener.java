@@ -47,8 +47,8 @@ public class EventListener implements Listener {
             Attrib attrib = getOrCreateAttrib(stack);
             if (attrib.globalId > 0) {
                 player.sendMessage("using global " + attrib.globalId);
-            } else if (!attrib.active) {
-                attrib.active = true;
+            } else if (!attrib.isActive()) {
+                attrib.active();
                 offerAttrib(stack, attrib);
                 //player.setItemInHand(event.getHandType(), stack);
                 player.sendMessage("item activated!");

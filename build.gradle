@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.soraworld:hocon:1.0.9'
+    compile 'org.soraworld:hocon:1.1.0'
 }
 
 subprojects {

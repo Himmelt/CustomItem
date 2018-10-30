@@ -85,7 +85,9 @@ public class NBTUtil {
         NBTTagCompound tag = getOrCreateTag(stack, "attrib");
         Attrib attrib = new Attrib();
         attrib.globalId = tag.getInt("globalId");
-        attrib.active = tag.getBoolean("active");
+        attrib.setActive(tag.getBoolean("active"));
+        attrib.level = tag.getInt("level");
+        attrib.points = tag.getInt("points");
         attrib.name = tag.getString("name");
         attrib.attack = tag.getInt("attack");
         attrib.manaAttack = tag.getInt("manaAttack");
@@ -110,7 +112,9 @@ public class NBTUtil {
         if (tag == null || !tag.hasKey("active")) return null;
         Attrib attrib = new Attrib();
         attrib.globalId = tag.getInt("globalId");
-        attrib.active = tag.getBoolean("active");
+        attrib.setActive(tag.getBoolean("active"));
+        attrib.level = tag.getInt("level");
+        attrib.points = tag.getInt("points");
         attrib.name = tag.getString("name");
         attrib.attack = tag.getInt("attack");
         attrib.manaAttack = tag.getInt("manaAttack");
@@ -133,7 +137,9 @@ public class NBTUtil {
     public static void offerAttrib(org.bukkit.inventory.ItemStack stack, Attrib attrib) {
         NBTTagCompound tag = getOrCreateTag(stack, "attrib");
         tag.setInt("globalId", attrib.globalId);
-        tag.setBoolean("active", attrib.active);
+        tag.setBoolean("active", attrib.isActive());
+        tag.setInt("level", attrib.level);
+        tag.setInt("points", attrib.points);
         tag.setString("name", attrib.name);
         tag.setInt("attack", attrib.attack);
         tag.setInt("manaAttack", attrib.manaAttack);
