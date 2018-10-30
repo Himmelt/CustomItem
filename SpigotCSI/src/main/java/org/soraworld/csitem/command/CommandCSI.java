@@ -91,13 +91,13 @@ public final class CommandCSI {
     /**
      * 给与指定id的物品(全局).
      */
-    @Sub(path = "global.give", perm = "admin", usage = "/csi give <player|@p> <id|name> <item id|name>")
+    @Sub(path = "global.give", perm = "admin", usage = "/csi give <player|@p> <id|name> <item id|name> [amount] [damage]")
     public static void global_give(SpigotCommand self, CommandSender sender, Args args) {
         give(self, (AttribManager) self.manager, sender, args, true);
     }
 
     private static void give(SpigotCommand cmd, AttribManager manager, CommandSender sender, Args args, boolean global) {
-        if (args.size() == 3) {
+        if (args.size() >= 3) {
             String target = args.first();
             Player player = Bukkit.getPlayer(target);
             if (player != null) {
@@ -105,13 +105,11 @@ public final class CommandCSI {
                 Attrib attrib = attribId.matches("\\d+") ? getGlobalAttrib(Integer.valueOf(attribId)) : getGlobalAttrib(attribId);
                 if (attrib != null) {
                     String itemId = args.get(2);
-                    ItemStack stack = itemId.matches("\\d+") ? createItemStack(Integer.valueOf(itemId), 1, 0) : createItemStack(itemId, 1, 0);
-                    // TODO set globalId to this itemStack
-                    if (global) {
-
-                    } else {
-
-                    }
+                    int amount = 0, damage = 0;
+                    if (args.size() >= 4 && args.get(3).matches("\\d+")) amount = Integer.valueOf(args.get(3));
+                    if (args.size() >= 5 && args.get(4).matches("\\d+")) damage = Integer.valueOf(args.get(4));
+                    ItemStack stack = itemId.matches("\\d+") ? createItemStack(Integer.valueOf(itemId), amount, damage) : createItemStack(itemId, amount, damage);
+                    offerAttrib(stack, global ? attrib : attrib.toLocal());
                     player.getInventory().addItem(stack);
                 } else manager.sendKey(sender, "global.idNotExist");
             } else manager.sendKey(sender, "playerIsOffline", target);
@@ -129,7 +127,7 @@ public final class CommandCSI {
     /**
      * 给与指定id的物品(非全局).
      */
-    @Sub(perm = "admin", usage = "/csi give <player|@p> <id|name> <item id|name>")
+    @Sub(perm = "admin", usage = "/csi give <player|@p> <id|name> <item id|name> [amount] [damage]")
     public static void give(SpigotCommand self, CommandSender sender, Args args) {
         give(self, (AttribManager) self.manager, sender, args, false);
     }

@@ -62,11 +62,21 @@ public class Attrib {
         copy(other);
     }
 
+    public Attrib toLocal() {
+        Attrib local = new Attrib();
+        local.copy(this);
+        local.globalId = 0;
+        local.active = false;
+        return local;
+    }
+
     public void copy(Attrib old) {
         if (old != null) {
             globalId = old.globalId;
             active = old.active;
 
+            level = old.level;
+            points = old.points;
             name = old.name;
             attack = old.attack;
             manaAttack = old.manaAttack;
@@ -89,6 +99,8 @@ public class Attrib {
         globalId = -1;
         active = false;
 
+        level = 0;
+        points = 0;
         name = "";
         attack = 0;
         manaAttack = 0;
@@ -137,6 +149,8 @@ public class Attrib {
     public static NodeMap serialize(Attrib attrib, Options options) {
         NodeMap node = new NodeMap(options);
         if (attrib != null) {
+            if (attrib.level != 0) node.set("level", attrib.level);
+            if (attrib.points != 0) node.set("points", attrib.points);
             if (attrib.name != null && !attrib.name.isEmpty()) node.set("name", attrib.name);
             if (attrib.attack != 0) node.set("attack", attrib.attack);
             if (attrib.manaAttack != 0) node.set("manaAttack", attrib.manaAttack);
