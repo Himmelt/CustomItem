@@ -11,7 +11,7 @@ import org.soraworld.violet.plugin.SpigotPlugin;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static org.soraworld.csitem.nbt.NBTUtil.getOrCreateAttrib;
+import static org.soraworld.csitem.nms.NBTUtil.getOrCreateAttrib;
 import static org.soraworld.violet.nms.Version.v1_12_R1;
 
 public class PlayerTickTask implements Runnable {

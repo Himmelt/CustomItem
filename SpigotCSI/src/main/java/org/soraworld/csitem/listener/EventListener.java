@@ -23,12 +23,12 @@ import org.bukkit.util.Vector;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.data.PlayerAttrib;
 import org.soraworld.csitem.manager.AttribManager;
-import org.soraworld.csitem.nbt.NBTUtil;
+import org.soraworld.csitem.nms.NBTUtil;
 
 import java.util.Random;
 
-import static org.soraworld.csitem.nbt.NBTUtil.getOrCreateAttrib;
-import static org.soraworld.csitem.nbt.NBTUtil.offerAttrib;
+import static org.soraworld.csitem.nms.NBTUtil.getOrCreateAttrib;
+import static org.soraworld.csitem.nms.NBTUtil.offerAttrib;
 
 public class EventListener implements Listener {
 

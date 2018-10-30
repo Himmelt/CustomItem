@@ -77,6 +77,10 @@ public class CSIManager {
         return items.get(globalId);
     }
 
+    public static Attrib getGlobalAttrib(String name) {
+        return items.get(names.getOrDefault(name, -1));
+    }
+
     public static Attrib getOrCreate(int id) {
         if (id <= 0) return null;
         return items.computeIfAbsent(id, Attrib::new);

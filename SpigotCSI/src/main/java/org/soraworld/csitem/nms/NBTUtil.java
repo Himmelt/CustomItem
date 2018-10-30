@@ -1,4 +1,4 @@
-package org.soraworld.csitem.nbt;
+package org.soraworld.csitem.nms;
 
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;

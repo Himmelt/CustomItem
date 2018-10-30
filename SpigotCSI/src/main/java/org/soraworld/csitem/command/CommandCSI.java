@@ -1,12 +1,13 @@
 package org.soraworld.csitem.command;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.manager.AttribManager;
-import org.soraworld.csitem.nbt.NBTUtil;
+import org.soraworld.csitem.nms.NBTUtil;
 import org.soraworld.violet.command.Args;
 import org.soraworld.violet.command.SpigotCommand;
 import org.soraworld.violet.command.Sub;
@@ -15,8 +16,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static org.soraworld.csitem.manager.CSIManager.*;
-import static org.soraworld.csitem.nbt.NBTUtil.getOrCreateAttrib;
-import static org.soraworld.csitem.nbt.NBTUtil.offerAttrib;
+import static org.soraworld.csitem.nms.ItemUtil.createItemStack;
+import static org.soraworld.csitem.nms.NBTUtil.getOrCreateAttrib;
+import static org.soraworld.csitem.nms.NBTUtil.offerAttrib;
 
 public final class CommandCSI {
 
@@ -91,7 +93,29 @@ public final class CommandCSI {
      */
     @Sub(path = "global.give", perm = "admin", usage = "/csi give <player|@p> <id|name> <item id|name>")
     public static void global_give(SpigotCommand self, CommandSender sender, Args args) {
+        give(self, (AttribManager) self.manager, sender, args, true);
+    }
 
+    private static void give(SpigotCommand cmd, AttribManager manager, CommandSender sender, Args args, boolean global) {
+        if (args.size() == 3) {
+            String target = args.first();
+            Player player = Bukkit.getPlayer(target);
+            if (player != null) {
+                String attribId = args.get(1);
+                Attrib attrib = attribId.matches("\\d+") ? getGlobalAttrib(Integer.valueOf(attribId)) : getGlobalAttrib(attribId);
+                if (attrib != null) {
+                    String itemId = args.get(2);
+                    ItemStack stack = itemId.matches("\\d+") ? createItemStack(Integer.valueOf(itemId), 1, 0) : createItemStack(itemId, 1, 0);
+                    // TODO set globalId to this itemStack
+                    if (global) {
+
+                    } else {
+
+                    }
+                    player.getInventory().addItem(stack);
+                } else manager.sendKey(sender, "global.idNotExist");
+            } else manager.sendKey(sender, "playerIsOffline", target);
+        } else cmd.sendUsage(sender);
     }
 
     /**
@@ -105,9 +129,9 @@ public final class CommandCSI {
     /**
      * 给与指定id的物品(非全局).
      */
-    @Sub(perm = "admin", usage = "/csi give <player|@p> <id|name>  <item id|name>")
+    @Sub(perm = "admin", usage = "/csi give <player|@p> <id|name> <item id|name>")
     public static void give(SpigotCommand self, CommandSender sender, Args args) {
-
+        give(self, (AttribManager) self.manager, sender, args, false);
     }
 
     @Sub(perm = "admin", onlyPlayer = true, usage = "/csi attack [damage]")
