@@ -89,7 +89,7 @@ public final class CommandCSI {
     /**
      * 给与指定id的物品(全局).
      */
-    @Sub(path = "global.give", perm = "admin", usage = "/csi give <player|@p> <id|name>")
+    @Sub(path = "global.give", perm = "admin", usage = "/csi give <player|@p> <id|name> <item id|name>")
     public static void global_give(SpigotCommand self, CommandSender sender, Args args) {
 
     }
@@ -105,7 +105,7 @@ public final class CommandCSI {
     /**
      * 给与指定id的物品(非全局).
      */
-    @Sub(perm = "admin", usage = "/csi give <player|@p> <id|name>")
+    @Sub(perm = "admin", usage = "/csi give <player|@p> <id|name>  <item id|name>")
     public static void give(SpigotCommand self, CommandSender sender, Args args) {
 
     }
