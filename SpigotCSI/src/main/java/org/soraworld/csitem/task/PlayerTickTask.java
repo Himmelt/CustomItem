@@ -11,7 +11,8 @@ import org.soraworld.violet.plugin.SpigotPlugin;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static org.soraworld.csitem.nms.NBTUtil.getOrCreateAttrib;
+import static org.soraworld.csitem.manager.CSIManager.getGlobalAttrib;
+import static org.soraworld.csitem.nms.NBTUtil.getAttrib;
 import static org.soraworld.violet.nms.Version.v1_12_R1;
 
 public class PlayerTickTask implements Runnable {
@@ -77,8 +78,9 @@ public class PlayerTickTask implements Runnable {
     private void fetchState(ItemStack stack, State state) {
         // TODO 提取属性
         if (stack != null && stack.getType() != Material.AIR) {
-            Attrib attrib = getOrCreateAttrib(stack);
-            state.append(attrib);
+            Attrib attrib = getAttrib(stack);
+            if (attrib != null && attrib.globalId > 0) attrib = getGlobalAttrib(attrib.globalId);
+            if (attrib != null) state.append(attrib);
         }
     }
 

@@ -91,7 +91,7 @@ public class NBTUtil {
 
     public static Attrib getAttrib(org.bukkit.inventory.ItemStack stack) {
         NBTTagCompound tag = getTag(stack, "attrib");
-        if (tag == null || !tag.hasKey("active")) return null;
+        if (tag == null) return null;
         Attrib attrib = new Attrib();
         attrib.globalId = tag.getInt("globalId");
         nbt2attrib(tag, attrib);

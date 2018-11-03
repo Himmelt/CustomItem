@@ -23,11 +23,11 @@ import org.bukkit.util.Vector;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.data.PlayerAttrib;
 import org.soraworld.csitem.manager.AttribManager;
-import org.soraworld.csitem.nms.NBTUtil;
 
 import java.util.Random;
 
-import static org.soraworld.csitem.nms.NBTUtil.getOrCreateAttrib;
+import static org.soraworld.csitem.manager.CSIManager.getGlobalAttrib;
+import static org.soraworld.csitem.nms.NBTUtil.getAttrib;
 import static org.soraworld.csitem.nms.NBTUtil.offerAttrib;
 
 public class EventListener implements Listener {
@@ -44,14 +44,16 @@ public class EventListener implements Listener {
         ItemStack stack = event.getItem();
         Player player = event.getPlayer();
         if (stack != null && stack.getType() != Material.AIR) {
-            Attrib attrib = getOrCreateAttrib(stack);
-            if (attrib.globalId > 0) {
-                player.sendMessage("using global " + attrib.globalId);
-            } else if (!attrib.isActive()) {
-                attrib.active();
-                offerAttrib(stack, attrib);
-                //player.setItemInHand(event.getHandType(), stack);
-                player.sendMessage("item activated!");
+            Attrib attrib = getAttrib(stack);
+            if (attrib != null) {
+                if (attrib.globalId > 0) {
+                    // TODO modify
+                    player.sendMessage("using global " + attrib.globalId);
+                } else if (!attrib.isActive()) {
+                    attrib.active();
+                    offerAttrib(stack, attrib);
+                    manager.sendKey(player, "itemActivated");
+                }
             }
         }
     }
@@ -69,7 +71,8 @@ public class EventListener implements Listener {
             Player attacker = (Player) cause;
             ItemStack stack = attacker.getInventory().getItemInMainHand();
             if (stack != null && stack.getType() != Material.AIR) {
-                Attrib attrib = NBTUtil.getAttrib(stack);
+                Attrib attrib = getAttrib(stack);
+                if (attrib != null && attrib.globalId > 0) attrib = getGlobalAttrib(attrib.globalId);
                 if (attrib != null) {
                     if (attrib.critChance > 0 && attrib.critChance > random.nextFloat()) {
                         damage += attrib.critDamage;
@@ -80,13 +83,11 @@ public class EventListener implements Listener {
         if (target instanceof Player) {
             Player victim = (Player) target;
             PlayerAttrib attrib = getPlayerAttrib(victim);
-            System.out.println("dodgeChance:" + attrib.dodgeChance);
             if (attrib.dodgeChance > 0 && attrib.dodgeChance > random.nextFloat()) {
                 // TODO check & need cancel event ?
                 //victim.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 80, 2, true, false), true);
                 // TODO update lastDodge
                 victim.setVelocity(dodgeVec(attrib, victim));
-                System.out.println("setDamage 0");
                 event.setDamage(0.0D);
                 return;
             }
@@ -143,7 +144,8 @@ public class EventListener implements Listener {
             else if (i == 3) stack = inv.getLeggings();
             else stack = inv.getBoots();
             if (stack != null && stack.getType() != Material.AIR) {
-                Attrib attrib = NBTUtil.getAttrib(stack);
+                Attrib attrib = getAttrib(stack);
+                if (attrib != null && attrib.globalId > 0) attrib = getGlobalAttrib(attrib.globalId);
                 if (attrib != null) pa.append(attrib);
             }
         }

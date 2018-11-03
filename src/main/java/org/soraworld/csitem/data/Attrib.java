@@ -135,7 +135,14 @@ public class Attrib {
     }
 
     public String toString() {
-        return "{\nglobal:" + globalId + ",\n  active:" + active + ",\n  name:" + name + ",\n  attack:" + attack + ",\n  walkspeed:" + walkspeed + "\n}";
+        return "{\nglobal:" + globalId
+                + ",\n  name:" + name
+                + ",\n  level:" + level
+                + ",\n  points:" + points
+                + ",\n  active:" + active
+                + ",\n  attack:" + attack
+                + ",\n  walkspeed:" + walkspeed
+                + "\n}";
     }
 
     public static Attrib deserialize(Node node, int id) {

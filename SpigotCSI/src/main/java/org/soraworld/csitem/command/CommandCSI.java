@@ -111,6 +111,7 @@ public final class CommandCSI {
                     ItemStack stack = itemId.matches("\\d+") ? createItemStack(Integer.valueOf(itemId), amount, damage) : createItemStack(itemId, amount, damage);
                     offerAttrib(stack, global ? attrib : attrib.toLocal());
                     player.getInventory().addItem(stack);
+                    manager.sendKey(player, "giveSuccess", player.getName());
                 } else manager.sendKey(sender, "global.idNotExist");
             } else manager.sendKey(sender, "playerIsOffline", target);
         } else cmd.sendUsage(sender);
@@ -121,7 +122,9 @@ public final class CommandCSI {
      */
     @Sub(perm = "admin", usage = "/csi list [page]")
     public static void list(SpigotCommand self, CommandSender sender, Args args) {
-
+        AttribManager manager = ((AttribManager) self.manager);
+        int page = (args.empty() || !args.first().matches("\\d+")) ? 1 : Integer.valueOf(args.first());
+        manager.listItems(sender, page);
     }
 
     /**
@@ -352,7 +355,7 @@ public final class CommandCSI {
                         Attrib global = getGlobalAttrib(attrib.globalId);
                         if (global != null) {
                             manager.sendKey(player, "global.get" + Name, fun.apply(global));
-                        } else manager.sendKey(player, "idNotExist");
+                        } else manager.sendKey(player, "global.idNotExist");
                     } else manager.sendKey(player, "get" + Name, fun.apply(attrib));
                 } else manager.sendKey(player, "noAttrib");
             }
@@ -376,7 +379,7 @@ public final class CommandCSI {
                         } catch (NumberFormatException ignored) {
                             manager.sendKey(player, "invalidFloat");
                         }
-                    } else manager.sendKey(player, "idNotExist");
+                    } else manager.sendKey(player, "global.idNotExist");
                 } else {
                     try {
                         float value = Float.valueOf(args.first());
@@ -396,7 +399,7 @@ public final class CommandCSI {
                         Attrib global = getGlobalAttrib(attrib.globalId);
                         if (global != null) {
                             manager.sendKey(player, "global.get" + Name, fun.apply(global));
-                        } else manager.sendKey(player, "idNotExist");
+                        } else manager.sendKey(player, "global.idNotExist");
                     } else manager.sendKey(player, "get" + Name, fun.apply(attrib));
 
                 } else manager.sendKey(player, "noAttrib");
@@ -421,7 +424,7 @@ public final class CommandCSI {
                         } catch (NumberFormatException ignored) {
                             manager.sendKey(player, "invalidDouble");
                         }
-                    } else manager.sendKey(player, "idNotExist");
+                    } else manager.sendKey(player, "global.idNotExist");
                 } else {
                     try {
                         double value = Float.valueOf(args.first());
@@ -441,7 +444,7 @@ public final class CommandCSI {
                         Attrib global = getGlobalAttrib(attrib.globalId);
                         if (global != null) {
                             manager.sendKey(player, "global.get" + Name, fun.apply(global));
-                        } else manager.sendKey(player, "idNotExist");
+                        } else manager.sendKey(player, "global.idNotExist");
                     } else manager.sendKey(player, "get" + Name, fun.apply(attrib));
 
                 } else manager.sendKey(player, "noAttrib");

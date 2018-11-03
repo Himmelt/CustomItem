@@ -5,8 +5,8 @@ import org.soraworld.hocon.node.FileNode;
 import org.soraworld.hocon.node.Options;
 
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static org.soraworld.csitem.data.Attrib.deserialize;
 import static org.soraworld.csitem.data.Attrib.serialize;
@@ -16,8 +16,8 @@ public class CSIManager {
     private final Path itemsFile;
     private final Options options;
 
-    private static HashMap<String, Integer> names = new HashMap<>();
-    private static HashMap<Integer, Attrib> items = new HashMap<>();
+    private static final TreeMap<String, Integer> names = new TreeMap<>();
+    static final TreeMap<Integer, Attrib> items = new TreeMap<>();
     private static int NEXT_ID = 1;
 
     public CSIManager(Path file, Options options) {
@@ -49,7 +49,7 @@ public class CSIManager {
             }
             NEXT_ID = maxId + 1;
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -61,7 +61,7 @@ public class CSIManager {
         try {
             node.save();
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
