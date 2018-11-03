@@ -47,6 +47,10 @@ public class NBTUtil {
     }
 
     public static NBTTagCompound getOrCreateTag(ItemStack stack, String path) {
+        if (stack == null) return new NBTTagCompound();
+        if (!(stack instanceof CraftItemStack)) {
+            stack = CraftItemStack.asCraftCopy(stack);
+        }
         try {
             NBTTagCompound tag = ((net.minecraft.server.v1_12_R1.ItemStack) handle.get(stack)).getTag();
             if (tag == null) {
@@ -66,6 +70,10 @@ public class NBTUtil {
     }
 
     public static NBTTagCompound getTag(ItemStack stack, String path) {
+        if (stack == null) return new NBTTagCompound();
+        if (!(stack instanceof CraftItemStack)) {
+            stack = CraftItemStack.asCraftCopy(stack);
+        }
         try {
             NBTTagCompound tag = ((net.minecraft.server.v1_12_R1.ItemStack) handle.get(stack)).getTag();
             if (tag == null) return null;

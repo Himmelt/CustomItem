@@ -80,7 +80,7 @@ public class PlayerTickTask implements Runnable {
         if (stack != null && stack.getType() != Material.AIR) {
             Attrib attrib = getAttrib(stack);
             if (attrib != null && attrib.globalId > 0) attrib = getGlobalAttrib(attrib.globalId);
-            if (attrib != null) state.append(attrib);
+            if (attrib != null && (attrib.globalId > 0 || attrib.isActive())) state.append(attrib);
         }
     }
 

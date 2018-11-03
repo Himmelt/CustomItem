@@ -118,6 +118,7 @@ public class Attrib {
         bloodChance = 0;
     }
 
+    // TODO apply for every conditions check
     public boolean isActive() {
         return active;
     }
