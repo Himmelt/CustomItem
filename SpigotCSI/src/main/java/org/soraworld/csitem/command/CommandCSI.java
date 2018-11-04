@@ -104,9 +104,11 @@ public final class CommandCSI {
                 Attrib attrib = attribId.matches("\\d+") ? getGlobal(Integer.valueOf(attribId)) : getGlobal(attribId);
                 if (attrib != null) {
                     String itemId = args.get(2);
-                    int amount = 0, damage = 0;
+                    int amount = 1, damage = 0;
                     if (args.size() >= 4 && args.get(3).matches("\\d+")) amount = Integer.valueOf(args.get(3));
                     if (args.size() >= 5 && args.get(4).matches("\\d+")) damage = Integer.valueOf(args.get(4));
+                    amount = amount <= 0 ? 1 : amount;
+                    damage = damage < 0 ? 0 : damage > 15 ? 15 : damage;
                     ItemStack stack = itemId.matches("\\d+") ? createItemStack(Integer.valueOf(itemId), amount, damage) : createItemStack(itemId, amount, damage);
                     offerAttrib(stack, global ? attrib : attrib.toLocal());
                     player.getInventory().addItem(stack);

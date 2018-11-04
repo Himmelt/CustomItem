@@ -76,10 +76,9 @@ public class PlayerTickTask implements Runnable {
     }
 
     private void fetchState(ItemStack stack, State state) {
-        // TODO 提取属性
         if (stack != null && stack.getType() != Material.AIR) {
             Attrib attrib = manager.getAttrib(stack);
-            if (attrib != null && attrib.isActive()) state.append(attrib);
+            if (attrib != null) state.append(attrib);
         }
     }
 

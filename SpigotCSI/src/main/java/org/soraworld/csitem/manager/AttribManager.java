@@ -64,7 +64,6 @@ public class AttribManager extends SpigotManager {
     }
 
     public void showAttribInfo(CommandSender sender, int id) {
-        // TODO show info
         Attrib global = getGlobal(id);
         if (global != null) {
             sendKey(sender, "\n" + global.toString());
@@ -72,7 +71,6 @@ public class AttribManager extends SpigotManager {
     }
 
     public void showAttribInfo(CommandSender sender, String name) {
-        // TODO show info
         Attrib global = getGlobal(name);
         if (global != null) {
             sendKey(sender, global.toString());
@@ -102,7 +100,6 @@ public class AttribManager extends SpigotManager {
         return nbt2attrib(tag, new ItemAttrib());
     }
 
-    /* TODO check active */
     public Attrib getAttrib(ItemStack stack) {
         NBTTagCompound tag = NBTUtil.getTag(stack, "attrib");
         if (tag == null) return null;
@@ -116,6 +113,7 @@ public class AttribManager extends SpigotManager {
     public static void offerAttrib(ItemStack stack, final Attrib attrib) {
         NBTTagCompound tag = NBTUtil.getOrCreateTag(stack, "attrib");
         tag.setInt("globalId", attrib.globalId);
+        tag.setBoolean("active", attrib.isActive());
         tag.setInt("globalId", attrib.globalId);
         tag.setInt("level", attrib.level);
         tag.setInt("points", attrib.points);
@@ -127,17 +125,15 @@ public class AttribManager extends SpigotManager {
         tag.setFloat("walkspeed", attrib.walkspeed);
         tag.setFloat("blockChance", attrib.blockChance);
         tag.setFloat("dodgeChance", attrib.dodgeChance);
+        tag.setDouble("dodgeX", ((ItemAttrib) attrib).dodgeX);
+        tag.setDouble("dodgeX", ((ItemAttrib) attrib).dodgeZ);
         tag.setFloat("suckRatio", attrib.suckRatio);
         tag.setFloat("fireChance", attrib.fireChance);
         tag.setFloat("freezeChance", attrib.freezeChance);
         tag.setFloat("blockChance", attrib.blockChance);
-        if (attrib instanceof ItemAttrib) {
-            tag.setBoolean("active", attrib.isActive());
-            tag.setLong("lastBlock", ((ItemAttrib) attrib).lastBlock);
-            tag.setLong("lastDodge", ((ItemAttrib) attrib).lastDodge);
-            tag.setDouble("dodgeX", ((ItemAttrib) attrib).dodgeX);
-            tag.setDouble("dodgeX", ((ItemAttrib) attrib).dodgeZ);
-        }
+        // TODO
+        //tag.setLong("lastBlock", ((ItemAttrib) attrib).lastBlock);
+        //tag.setLong("lastDodge", ((ItemAttrib) attrib).lastDodge);
     }
 
     private static ItemAttrib nbt2attrib(NBTTagCompound tag, ItemAttrib attrib) {

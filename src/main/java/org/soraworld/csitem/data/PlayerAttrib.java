@@ -5,10 +5,9 @@ public class PlayerAttrib extends ItemAttrib {
         this.critChance += attrib.critChance;
         this.critDamage += attrib.critDamage;
         this.blockChance += attrib.blockChance;
-        // TODO fix
-        //this.lastBlock += attrib.lastBlock;
         this.dodgeChance += attrib.dodgeChance;
         // TODO fix
+        //this.lastBlock += attrib.lastBlock;
         //this.lastDodge += attrib.lastDodge;
         this.dodgeX += attrib.dodgeX;
         this.dodgeZ += attrib.dodgeZ;

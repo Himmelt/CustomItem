@@ -156,9 +156,7 @@ public class Attrib {
         return node;
     }
 
-    // TODO apply for every conditions check
     public boolean isActive() {
-        // TODO global active
         return active;
     }
 

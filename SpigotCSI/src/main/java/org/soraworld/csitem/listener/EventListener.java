@@ -24,7 +24,6 @@ import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.data.ItemAttrib;
 import org.soraworld.csitem.data.PlayerAttrib;
 import org.soraworld.csitem.manager.AttribManager;
-import org.soraworld.csitem.manager.CSIManager;
 
 import java.util.Random;
 
@@ -45,15 +44,10 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         if (stack != null && stack.getType() != Material.AIR) {
             Attrib attrib = manager.getAttrib(stack);
-            if (attrib != null) {
-                if (attrib.globalId > 0) {
-                    // TODO modify
-                    player.sendMessage("using global " + attrib.globalId);
-                } else if (!attrib.isActive()) {
-                    attrib.active();
-                    offerAttrib(stack, attrib);
-                    manager.sendKey(player, "itemActivated");
-                }
+            if (attrib != null && !attrib.isGlobal() && !attrib.isActive()) {
+                attrib.active();
+                offerAttrib(stack, attrib);
+                manager.sendKey(player, "itemActivated");
             }
         }
     }
@@ -72,7 +66,6 @@ public class EventListener implements Listener {
             ItemStack stack = attacker.getInventory().getItemInMainHand();
             if (stack != null && stack.getType() != Material.AIR) {
                 Attrib attrib = manager.getAttrib(stack);
-                if (attrib != null && attrib.globalId > 0) attrib = CSIManager.getGlobal(attrib.globalId);
                 if (attrib != null) {
                     if (attrib.critChance > 0 && attrib.critChance > random.nextFloat()) {
                         damage += attrib.critDamage;
@@ -134,7 +127,6 @@ public class EventListener implements Listener {
 
     private PlayerAttrib getPlayerAttrib(Player player) {
         PlayerAttrib pa = new PlayerAttrib();
-        // TODO positive & negative attributes
         PlayerInventory inv = player.getInventory();
         ItemStack stack;
         for (int i = 0; i < 5; i++) {
