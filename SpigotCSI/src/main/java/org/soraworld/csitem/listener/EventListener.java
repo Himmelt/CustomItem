@@ -2,6 +2,7 @@ package org.soraworld.csitem.listener;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -60,6 +61,15 @@ public class EventListener implements Listener {
                     if (attrib.critChance > 0 && attrib.critChance > random.nextFloat()) {
                         damage += attrib.critDamage;
                     }
+                    if (target instanceof LivingEntity && attrib.freezeChance > 0 && attrib.freezeChance > random.nextFloat()) {
+                        ((LivingEntity) target).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 0, true), true);
+                    }
+                    if (attrib.fireChance > 0 && attrib.fireChance > random.nextFloat()) {
+                        // TODO fire
+                    }
+                    if (attrib.bloodChance > 0 && attrib.bloodChance > random.nextFloat()) {
+                        // TODO blood
+                    }
                 }
             }
         }
@@ -76,7 +86,7 @@ public class EventListener implements Listener {
             }
             if (attrib.blockChance > 0 && attrib.blockChance > random.nextFloat()) {
                 // TODO check & need cancel event ?
-                victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 2, true, false), true);
+                victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 1, true));
                 // TODO update lastBlock
                 event.setDamage(0.0D);
                 return;
