@@ -23,7 +23,6 @@ public class NBTUtil {
     public static final String ATTRIBS = "attribs";
 
     private static final Field handle;
-    private static final boolean support;
 
     static {
         Field _handle = null;
@@ -35,7 +34,6 @@ public class NBTUtil {
         } catch (Throwable ignored) {
         }
         handle = _handle;
-        support = _support;
     }
 
     public static void setTag(org.bukkit.inventory.ItemStack stack, NBTTagCompound tag) {

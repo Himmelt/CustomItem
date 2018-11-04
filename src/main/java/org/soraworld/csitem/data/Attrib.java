@@ -7,6 +7,7 @@ public class Attrib {
 
     public int globalId = 0;
     private boolean active = false;
+
     @Setting
     public int level = 0;
     @Setting
@@ -23,17 +24,17 @@ public class Attrib {
     public float walkspeed = 0;
     @Setting
     public float blockChance = 0;
-    public long lastBlock = 0;
     @Setting
     public float dodgeChance = 0;
-    public long lastDodge = 0;
     /**
      * 闪避 向玩家朝向(面前方为正方向)位移量 .
      */
+    @Setting
     public double dodgeX;
     /**
      * 闪避 向玩家侧向(左手方为正方向)位移量 .
      */
+    @Setting
     public double dodgeZ;
     @Setting
     public float suckRatio = 0;
@@ -58,15 +59,14 @@ public class Attrib {
         this.name = name;
     }
 
-    public Attrib(Attrib other) {
+    public Attrib(ItemAttrib other) {
         copy(other);
     }
 
-    public Attrib toLocal() {
-        Attrib local = new Attrib();
+    public ItemAttrib toLocal() {
+        ItemAttrib local = new ItemAttrib();
         local.copy(this);
         local.globalId = 0;
-        local.active = false;
         return local;
     }
 
@@ -74,7 +74,6 @@ public class Attrib {
         if (old != null) {
             globalId = old.globalId;
             active = old.active;
-
             level = old.level;
             points = old.points;
             name = old.name;
@@ -84,9 +83,7 @@ public class Attrib {
             critDamage = old.critDamage;
             walkspeed = old.walkspeed;
             blockChance = old.blockChance;
-            lastBlock = old.lastBlock;
             dodgeChance = old.dodgeChance;
-            lastDodge = old.lastDodge;
             suckRatio = old.suckRatio;
             fireChance = old.fireChance;
             freezeChance = old.freezeChance;
@@ -97,8 +94,6 @@ public class Attrib {
 
     public void reset() {
         globalId = -1;
-        active = false;
-
         level = 0;
         points = 0;
         name = "";
@@ -108,9 +103,7 @@ public class Attrib {
         critDamage = 0;
         walkspeed = 0;
         blockChance = 0;
-        lastBlock = 0;
         dodgeChance = 0;
-        lastDodge = 0;
         suckRatio = 0;
         fireChance = 0;
         freezeChance = 0;
@@ -118,21 +111,8 @@ public class Attrib {
         bloodChance = 0;
     }
 
-    // TODO apply for every conditions check
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public void active() {
-        if (!active) {
-            // TODO active
-
-            this.active = true;
-        }
+    public boolean isGlobal() {
+        return true;
     }
 
     public String toString() {
@@ -140,7 +120,7 @@ public class Attrib {
                 + ",\n  name:" + name
                 + ",\n  level:" + level
                 + ",\n  points:" + points
-                + ",\n  active:" + active
+                + ",\n  active:" + isActive()
                 + ",\n  attack:" + attack
                 + ",\n  walkspeed:" + walkspeed
                 + "\n}";
@@ -174,5 +154,18 @@ public class Attrib {
             if (attrib.bloodChance != 0) node.set("bloodChance", attrib.bloodChance);
         }
         return node;
+    }
+
+    // TODO apply for every conditions check
+    public boolean isActive() {
+        // TODO global active
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void active() {
     }
 }

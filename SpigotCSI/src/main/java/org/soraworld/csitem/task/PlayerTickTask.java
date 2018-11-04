@@ -6,19 +6,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.soraworld.csitem.data.Attrib;
-import org.soraworld.csitem.manager.CSIManager;
-import org.soraworld.violet.plugin.SpigotPlugin;
+import org.soraworld.csitem.manager.AttribManager;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-import static org.soraworld.csitem.manager.AttribManager.getAttrib;
 import static org.soraworld.violet.nms.Version.v1_12_R1;
 
 public class PlayerTickTask implements Runnable {
 
     private BukkitTask task;
     private final Player player;
+    private static AttribManager manager;
 
     static final UUID maxHealthUUID = UUID.fromString("6bea37f2-a767-477e-8386-3fa83a77d34d");
     static final UUID knockResistUUID = UUID.fromString("034d1b02-b3ca-4d7e-a0ef-b96109064c7e");
@@ -36,7 +35,8 @@ public class PlayerTickTask implements Runnable {
         this.player = player;
     }
 
-    public static void createTask(Player player, SpigotPlugin plugin, int updateTicks) {
+    public static void createTask(Player player, AttribManager manager, int updateTicks) {
+        PlayerTickTask.manager = manager;
         UUID uuid = player.getUniqueId();
         PlayerTickTask task = tasks.get(uuid);
         if (task != null) {
@@ -47,7 +47,7 @@ public class PlayerTickTask implements Runnable {
         if (v1_12_R1) task = new v1_12_R1_TickTask(player);
         else task = new PlayerTickTask(player);
 
-        task.setTask(Bukkit.getScheduler().runTaskTimer(plugin, task, updateTicks, updateTicks));
+        task.setTask(Bukkit.getScheduler().runTaskTimer(manager.getPlugin(), task, updateTicks, updateTicks));
     }
 
     private void cancel() {
@@ -78,9 +78,8 @@ public class PlayerTickTask implements Runnable {
     private void fetchState(ItemStack stack, State state) {
         // TODO 提取属性
         if (stack != null && stack.getType() != Material.AIR) {
-            Attrib attrib = getAttrib(stack);
-            if (attrib != null && attrib.globalId > 0) attrib = CSIManager.getGlobal(attrib.globalId);
-            if (attrib != null && (attrib.globalId > 0 || attrib.isActive())) state.append(attrib);
+            Attrib attrib = manager.getAttrib(stack);
+            if (attrib != null && attrib.isActive()) state.append(attrib);
         }
     }
 

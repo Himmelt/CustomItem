@@ -1,6 +1,5 @@
 package org.soraworld.csitem.command;
 
-import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.data.ItemAttrib;
 import org.soraworld.csitem.manager.AttribManager;
 import org.soraworld.violet.command.Args;
@@ -232,7 +231,7 @@ public final class CommandCSI {
         );
     }
 
-    private static void getSetInt(AttribManager manager, Player player, Args args, String Name, int min, int max, BiConsumer<Attrib, Integer> consumer, Function<Attrib, Integer> fun) {
+    private static void getSetInt(AttribManager manager, Player player, Args args, String Name, int min, int max, BiConsumer<ItemAttrib, Integer> consumer, Function<ItemAttrib, Integer> fun) {
         player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
             if (stack.getType() != ItemTypes.AIR) {
                 if (args.notEmpty()) {
@@ -249,7 +248,7 @@ public final class CommandCSI {
                             return;
                         }
                         if (attrib.globalId > 0) {
-                            Attrib global = getGlobal(attrib.globalId);
+                            ItemAttrib global = getGlobal(attrib.globalId);
                             if (global != null) {
                                 try {
                                     int value = Integer.valueOf(args.first());
@@ -277,7 +276,7 @@ public final class CommandCSI {
                 } else {
                     stack.get(ItemAttrib.class).ifPresent(attrib -> {
                         if (attrib.globalId > 0) {
-                            Attrib global = getGlobal(attrib.globalId);
+                            ItemAttrib global = getGlobal(attrib.globalId);
                             if (global != null) {
                                 manager.sendKey(player, "global.get" + Name, fun.apply(global));
                             } else manager.sendKey(player, "idNotExist");
@@ -289,13 +288,13 @@ public final class CommandCSI {
         });
     }
 
-    private static void getSetFloat(AttribManager manager, Player player, Args args, String Name, float min, float max, BiConsumer<Attrib, Float> consumer, Function<Attrib, Float> fun) {
+    private static void getSetFloat(AttribManager manager, Player player, Args args, String Name, float min, float max, BiConsumer<ItemAttrib, Float> consumer, Function<ItemAttrib, Float> fun) {
         player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(stack -> {
             if (stack.getType() != ItemTypes.AIR) {
                 if (args.notEmpty()) {
                     stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
                         if (attrib.globalId > 0) {
-                            Attrib global = getGlobal(attrib.globalId);
+                            ItemAttrib global = getGlobal(attrib.globalId);
                             if (global != null) {
                                 try {
                                     float value = Float.valueOf(args.first());
@@ -323,7 +322,7 @@ public final class CommandCSI {
                 } else {
                     stack.get(ItemAttrib.class).ifPresent(attrib -> {
                         if (attrib.globalId > 0) {
-                            Attrib global = getGlobal(attrib.globalId);
+                            ItemAttrib global = getGlobal(attrib.globalId);
                             if (global != null) {
                                 manager.sendKey(player, "global.get" + Name, fun.apply(global));
                             } else manager.sendKey(player, "idNotExist");

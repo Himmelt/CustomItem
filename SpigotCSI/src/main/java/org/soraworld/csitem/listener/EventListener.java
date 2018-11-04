@@ -21,13 +21,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.soraworld.csitem.data.Attrib;
+import org.soraworld.csitem.data.ItemAttrib;
 import org.soraworld.csitem.data.PlayerAttrib;
 import org.soraworld.csitem.manager.AttribManager;
 import org.soraworld.csitem.manager.CSIManager;
 
 import java.util.Random;
 
-import static org.soraworld.csitem.manager.AttribManager.getAttrib;
 import static org.soraworld.csitem.manager.AttribManager.offerAttrib;
 
 public class EventListener implements Listener {
@@ -44,7 +44,7 @@ public class EventListener implements Listener {
         ItemStack stack = event.getItem();
         Player player = event.getPlayer();
         if (stack != null && stack.getType() != Material.AIR) {
-            Attrib attrib = getAttrib(stack);
+            Attrib attrib = manager.getAttrib(stack);
             if (attrib != null) {
                 if (attrib.globalId > 0) {
                     // TODO modify
@@ -71,7 +71,7 @@ public class EventListener implements Listener {
             Player attacker = (Player) cause;
             ItemStack stack = attacker.getInventory().getItemInMainHand();
             if (stack != null && stack.getType() != Material.AIR) {
-                Attrib attrib = getAttrib(stack);
+                Attrib attrib = manager.getAttrib(stack);
                 if (attrib != null && attrib.globalId > 0) attrib = CSIManager.getGlobal(attrib.globalId);
                 if (attrib != null) {
                     if (attrib.critChance > 0 && attrib.critChance > random.nextFloat()) {
@@ -132,7 +132,7 @@ public class EventListener implements Listener {
     public void onItemMergeEvent(ItemMergeEvent event) {
     }
 
-    private static PlayerAttrib getPlayerAttrib(Player player) {
+    private PlayerAttrib getPlayerAttrib(Player player) {
         PlayerAttrib pa = new PlayerAttrib();
         // TODO positive & negative attributes
         PlayerInventory inv = player.getInventory();
@@ -144,15 +144,14 @@ public class EventListener implements Listener {
             else if (i == 3) stack = inv.getLeggings();
             else stack = inv.getBoots();
             if (stack != null && stack.getType() != Material.AIR) {
-                Attrib attrib = getAttrib(stack);
-                if (attrib != null && attrib.globalId > 0) attrib = CSIManager.getGlobal(attrib.globalId);
+                Attrib attrib = manager.getAttrib(stack);
                 if (attrib != null) pa.append(attrib);
             }
         }
         return pa;
     }
 
-    private static Vector dodgeVec(Attrib attrib, Player player) {
+    private static Vector dodgeVec(ItemAttrib attrib, Player player) {
         Vector d = player.getLocation().getDirection().normalize();
         return new Vector(attrib.dodgeX * d.getX() + attrib.dodgeZ * d.getZ(), 0,
                 attrib.dodgeX * d.getZ() - attrib.dodgeZ * d.getX());

@@ -8,8 +8,8 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.soraworld.csitem.data.Attrib.deserialize;
-import static org.soraworld.csitem.data.Attrib.serialize;
+import static org.soraworld.csitem.data.ItemAttrib.deserialize;
+import static org.soraworld.csitem.data.ItemAttrib.serialize;
 
 public class CSIManager {
 

@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Serializable
-public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, ItemAttrib.Immutable> {
+public class ItemAttrib extends ItemAttrib implements DataManipulator<ItemAttrib, ItemAttrib.Immutable> {
 
     public static final DataQuery ACTIVE = DataQuery.of("active");
     public static final DataQuery GLOBAL = DataQuery.of("global");
@@ -43,8 +43,8 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
     public ItemAttrib() {
     }
 
-    public ItemAttrib(Attrib attrib) {
-        super(attrib);
+    public ItemAttrib(ItemAttrib attrib) {
+        this.ItemAttrib(attrib);
     }
 
     public Optional<ItemAttrib> fill(DataHolder dataHolder, MergeFunction overlap) {
@@ -137,9 +137,9 @@ public class ItemAttrib extends Attrib implements DataManipulator<ItemAttrib, It
                 .set(BLOOD_CHANCE, bloodChance);
     }
 
-    public static class Immutable extends Attrib implements ImmutableDataManipulator<Immutable, ItemAttrib> {
-        public Immutable(Attrib attrib) {
-            super(attrib);
+    public static class Immutable extends ItemAttrib implements ImmutableDataManipulator<Immutable, ItemAttrib> {
+        public Immutable(ItemAttrib attrib) {
+            this.ItemAttrib(attrib);
         }
 
         public ItemAttrib asMutable() {

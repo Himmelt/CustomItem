@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.soraworld.csitem.data.Attrib;
+import org.soraworld.csitem.data.ItemAttrib;
 import org.soraworld.csitem.manager.AttribManager;
 import org.soraworld.violet.command.Args;
 import org.soraworld.violet.command.SpigotCommand;
@@ -14,7 +15,7 @@ import org.soraworld.violet.command.Sub;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static org.soraworld.csitem.manager.AttribManager.*;
+import static org.soraworld.csitem.manager.AttribManager.offerAttrib;
 import static org.soraworld.csitem.manager.CSIManager.*;
 import static org.soraworld.csitem.nms.ItemUtil.createItemStack;
 
@@ -309,52 +310,36 @@ public final class CommandCSI {
         ItemStack stack = player.getInventory().getItemInMainHand();
         if (stack != null && stack.getType() != Material.AIR) {
             if (args.notEmpty()) {
-                Attrib attrib = getOrCreateAttrib(stack);
+                ItemAttrib item = manager.getCreateAttrib(stack);
                 if ("GlobalId".equals(Name)) {
                     try {
-                        attrib.globalId = Integer.valueOf(args.first());
-                        offerAttrib(stack, attrib);
-                        manager.sendKey(player, "set" + Name, attrib.globalId);
-                        //player.setItemInHand(HandTypes.MAIN_HAND, stack);
+                        item.globalId = Integer.valueOf(args.first());
+                        offerAttrib(stack, item);
+                        manager.sendKey(player, "set" + Name, item.globalId);
                     } catch (NumberFormatException ignored) {
                         manager.sendKey(player, "invalidInt");
                     }
                     return;
                 }
-                if (attrib.globalId > 0) {
-                    Attrib global = getGlobal(attrib.globalId);
-                    if (global != null) {
-                        try {
-                            int value = Integer.valueOf(args.first());
-                            value = value < min ? min : value > max ? max : value;
-                            consumer.accept(global, value);
-                            manager.saveItems();
-                            manager.sendKey(player, "global.set" + Name, value);
-                        } catch (NumberFormatException ignored) {
-                            manager.sendKey(player, "invalidInt");
-                        }
-                    } else manager.sendKey(player, "global.idNotExist");
-                    return;
-                }
+                Attrib attrib = manager.shouldGlobal(item) ? item.getGlobal() : item;
                 try {
                     int value = Integer.valueOf(args.first());
                     value = value < min ? min : value > max ? max : value;
                     consumer.accept(attrib, value);
-                    offerAttrib(stack, attrib);
-                    manager.sendKey(player, "set" + Name, value);
-                    //player.setItemInHand(HandTypes.MAIN_HAND, stack);
+                    if (attrib.isGlobal()) {
+                        manager.saveItems();
+                        manager.sendKey(player, "global.set" + Name, value);
+                    } else {
+                        offerAttrib(stack, attrib);
+                        manager.sendKey(player, "set" + Name, value);
+                    }
                 } catch (NumberFormatException ignored) {
                     manager.sendKey(player, "invalidInt");
                 }
             } else {
-                Attrib attrib = getAttrib(stack);
+                Attrib attrib = manager.getAttrib(stack);
                 if (attrib != null) {
-                    if (attrib.globalId > 0) {
-                        Attrib global = getGlobal(attrib.globalId);
-                        if (global != null) {
-                            manager.sendKey(player, "global.get" + Name, fun.apply(global));
-                        } else manager.sendKey(player, "global.idNotExist");
-                    } else manager.sendKey(player, "get" + Name, fun.apply(attrib));
+                    manager.sendKey(player, (attrib.isGlobal() ? "global.get" : "get") + Name, fun.apply(attrib));
                 } else manager.sendKey(player, "noAttrib");
             }
         } else manager.sendKey(player, "emptyHand");
@@ -364,42 +349,26 @@ public final class CommandCSI {
         ItemStack stack = player.getInventory().getItemInMainHand();
         if (stack != null && stack.getType() != Material.AIR) {
             if (args.notEmpty()) {
-                Attrib attrib = getOrCreateAttrib(stack);
-                if (attrib.globalId > 0) {
-                    Attrib global = getGlobal(attrib.globalId);
-                    if (global != null) {
-                        try {
-                            float value = Float.valueOf(args.first());
-                            value = value < min ? min : value > max ? max : value;
-                            consumer.accept(global, value);
-                            manager.saveItems();
-                            manager.sendKey(player, "global.set" + Name, value);
-                        } catch (NumberFormatException ignored) {
-                            manager.sendKey(player, "invalidFloat");
-                        }
-                    } else manager.sendKey(player, "global.idNotExist");
-                } else {
-                    try {
-                        float value = Float.valueOf(args.first());
-                        value = value < min ? min : value > max ? max : value;
-                        consumer.accept(attrib, value);
+                ItemAttrib item = manager.getCreateAttrib(stack);
+                Attrib attrib = manager.shouldGlobal(item) ? item.getGlobal() : item;
+                try {
+                    float value = Float.valueOf(args.first());
+                    value = value < min ? min : value > max ? max : value;
+                    consumer.accept(attrib, value);
+                    if (attrib.isGlobal()) {
+                        manager.saveItems();
+                        manager.sendKey(player, "global.set" + Name, value);
+                    } else {
                         offerAttrib(stack, attrib);
                         manager.sendKey(player, "set" + Name, value);
-                        //player.setItemInHand(HandTypes.MAIN_HAND, stack);
-                    } catch (NumberFormatException ignored) {
-                        manager.sendKey(player, "invalidFloat");
                     }
+                } catch (NumberFormatException ignored) {
+                    manager.sendKey(player, "invalidFloat");
                 }
             } else {
-                Attrib attrib = getAttrib(stack);
+                Attrib attrib = manager.getAttrib(stack);
                 if (attrib != null) {
-                    if (attrib.globalId > 0) {
-                        Attrib global = getGlobal(attrib.globalId);
-                        if (global != null) {
-                            manager.sendKey(player, "global.get" + Name, fun.apply(global));
-                        } else manager.sendKey(player, "global.idNotExist");
-                    } else manager.sendKey(player, "get" + Name, fun.apply(attrib));
-
+                    manager.sendKey(player, (attrib.isGlobal() ? "global.get" : "get") + Name, fun.apply(attrib));
                 } else manager.sendKey(player, "noAttrib");
             }
         } else manager.sendKey(player, "emptyHand");
@@ -409,42 +378,26 @@ public final class CommandCSI {
         ItemStack stack = player.getInventory().getItemInMainHand();
         if (stack != null && stack.getType() != Material.AIR) {
             if (args.notEmpty()) {
-                Attrib attrib = getOrCreateAttrib(stack);
-                if (attrib.globalId > 0) {
-                    Attrib global = getGlobal(attrib.globalId);
-                    if (global != null) {
-                        try {
-                            double value = Double.valueOf(args.first());
-                            value = value < min ? min : value > max ? max : value;
-                            consumer.accept(global, value);
-                            manager.saveItems();
-                            manager.sendKey(player, "global.set" + Name, value);
-                        } catch (NumberFormatException ignored) {
-                            manager.sendKey(player, "invalidDouble");
-                        }
-                    } else manager.sendKey(player, "global.idNotExist");
-                } else {
-                    try {
-                        double value = Float.valueOf(args.first());
-                        value = value < min ? min : value > max ? max : value;
-                        consumer.accept(attrib, value);
+                ItemAttrib item = manager.getCreateAttrib(stack);
+                Attrib attrib = manager.shouldGlobal(item) ? item.getGlobal() : item;
+                try {
+                    double value = Double.valueOf(args.first());
+                    value = value < min ? min : value > max ? max : value;
+                    consumer.accept(attrib, value);
+                    if (attrib.isGlobal()) {
+                        manager.saveItems();
+                        manager.sendKey(player, "global.set" + Name, value);
+                    } else {
                         offerAttrib(stack, attrib);
                         manager.sendKey(player, "set" + Name, value);
-                        //player.setItemInHand(HandTypes.MAIN_HAND, stack);
-                    } catch (NumberFormatException ignored) {
-                        manager.sendKey(player, "invalidDouble");
                     }
+                } catch (NumberFormatException ignored) {
+                    manager.sendKey(player, "invalidDouble");
                 }
             } else {
-                Attrib attrib = getAttrib(stack);
+                Attrib attrib = manager.getAttrib(stack);
                 if (attrib != null) {
-                    if (attrib.globalId > 0) {
-                        Attrib global = getGlobal(attrib.globalId);
-                        if (global != null) {
-                            manager.sendKey(player, "global.get" + Name, fun.apply(global));
-                        } else manager.sendKey(player, "global.idNotExist");
-                    } else manager.sendKey(player, "get" + Name, fun.apply(attrib));
-
+                    manager.sendKey(player, (attrib.isGlobal() ? "global.get" : "get") + Name, fun.apply(attrib));
                 } else manager.sendKey(player, "noAttrib");
             }
         } else manager.sendKey(player, "emptyHand");
