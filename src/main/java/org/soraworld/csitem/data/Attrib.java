@@ -2,6 +2,10 @@ package org.soraworld.csitem.data;
 
 import org.soraworld.hocon.node.*;
 
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.TreeSet;
+
 @Serializable
 public class Attrib {
 
@@ -15,9 +19,9 @@ public class Attrib {
     @Setting
     public String name = "";
     @Setting
-    public int attack = 0;
-    @Setting
-    public int manaAttack = 0;
+    public float attack = 0;
+    @Setting // TODO 属性调用
+    public float manaAttack = 0;
     @Setting
     public float critChance = 0, critDamage = 0;
     @Setting
@@ -30,12 +34,12 @@ public class Attrib {
      * 闪避 向玩家朝向(面前方为正方向)位移量 .
      */
     @Setting
-    public double dodgeX;
+    public float dodgeX;
     /**
      * 闪避 向玩家侧向(左手方为正方向)位移量 .
      */
     @Setting
-    public double dodgeZ;
+    public float dodgeZ;
     @Setting
     public float suckRatio = 0;
     @Setting
@@ -46,6 +50,8 @@ public class Attrib {
     public float poisonChance = 0;
     @Setting
     public float bloodChance = 0;
+    @Setting
+    public ArrayList<Stubborn> stubborns = new ArrayList<>();
 
     public Attrib() {
     }
@@ -164,6 +170,18 @@ public class Attrib {
         this.active = active;
     }
 
-    public void active() {
+    public int[] splitPoints() {
+        Random random = new Random();
+        TreeSet<Integer> set = new TreeSet<>();
+        int i = 1;
+        for (i = 1; i <= 11; i++) set.add(random.nextInt(points + 1));
+        i = 0;
+        int[] array = new int[12];
+        for (int pos : set) {
+            array[i] = pos - (i == 0 ? 0 : array[i - 1]);
+            i++;
+            if (i == 11) array[11] = points - array[10];
+        }
+        return array;
     }
 }

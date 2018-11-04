@@ -18,6 +18,7 @@ public class PlayerTickTask implements Runnable {
 
     private BukkitTask task;
     private final Player player;
+    private final UUID uuid;
     private static AttribManager manager;
 
     static final UUID maxHealthUUID = UUID.fromString("6bea37f2-a767-477e-8386-3fa83a77d34d");
@@ -32,8 +33,12 @@ public class PlayerTickTask implements Runnable {
 
     private static final HashMap<UUID, PlayerTickTask> tasks = new HashMap<>();
 
+    public static final HashMap<UUID, Integer> times = new HashMap<>();
+    public static final HashMap<UUID, Float> bloods = new HashMap<>();
+
     PlayerTickTask(Player player) {
         this.player = player;
+        this.uuid = player.getUniqueId();
     }
 
     public static void createTask(Player player, AttribManager manager, int updateTicks) {
@@ -73,6 +78,11 @@ public class PlayerTickTask implements Runnable {
             fetchState(player.getEquipment().getBoots(), state);
 
             updateModifier(state);
+            int time = times.computeIfAbsent(uuid, i -> 0);
+            if (time > 0) {
+                times.put(uuid, time - 1);
+                player.setHealth(player.getHealth() - bloods.computeIfAbsent(uuid, u -> 0.0F));
+            }
         } else cancel();
     }
 
@@ -81,7 +91,7 @@ public class PlayerTickTask implements Runnable {
             Attrib attrib = manager.getAttrib(stack);
             if (attrib != null) {
                 if (!attrib.isGlobal() && !attrib.isActive()) {
-                    attrib.active();
+                    manager.activeItem(attrib);
                     offerAttrib(stack, attrib);
                     manager.sendKey(player, "itemActivated");
                 }

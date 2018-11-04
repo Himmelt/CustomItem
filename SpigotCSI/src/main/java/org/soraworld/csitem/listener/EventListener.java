@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -18,6 +19,7 @@ import org.bukkit.util.Vector;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.data.PlayerAttrib;
 import org.soraworld.csitem.manager.AttribManager;
+import org.soraworld.csitem.task.PlayerTickTask;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -43,7 +45,7 @@ public class EventListener implements Listener {
         if (stack != null && stack.getType() != Material.AIR) {
             Attrib attrib = manager.getAttrib(stack);
             if (attrib != null && !attrib.isGlobal() && !attrib.isActive()) {
-                attrib.active();
+                manager.activeItem(attrib);
                 offerAttrib(stack, attrib);
                 manager.sendKey(player, "itemActivated");
             }
@@ -70,8 +72,10 @@ public class EventListener implements Listener {
                     if (attrib.fireChance > 0 && attrib.fireChance > random.nextFloat()) {
                         // TODO fire
                     }
-                    if (attrib.bloodChance > 0 && attrib.bloodChance > random.nextFloat()) {
-                        // TODO blood
+                    if (target instanceof Player && attrib.bloodChance > 0 && attrib.bloodChance > random.nextFloat()) {
+                        // TODO blood Player
+                        PlayerTickTask.bloods.put(target.getUniqueId(), 1.0F);
+                        PlayerTickTask.times.put(target.getUniqueId(), 5);
                     }
                 }
             }
@@ -98,6 +102,13 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
         manager.createPlayerTask(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        UUID uuid = event.getPlayer().getUniqueId();
+        lastBlock.remove(uuid);
+        lastDodge.remove(uuid);
     }
 
     @EventHandler

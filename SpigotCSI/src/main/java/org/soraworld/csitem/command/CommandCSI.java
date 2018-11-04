@@ -138,7 +138,7 @@ public final class CommandCSI {
 
     @Sub(perm = "admin", onlyPlayer = true, usage = "/csi attack [damage]")
     public static void attack(SpigotCommand self, CommandSender sender, Args args) {
-        getSetInt(
+        getSetFloat(
                 (AttribManager) self.manager,
                 (Player) sender,
                 args, "Attack",
@@ -150,7 +150,7 @@ public final class CommandCSI {
 
     @Sub(path = "manattack", perm = "admin", onlyPlayer = true, usage = "/csi manattack [damage]")
     public static void manaAttack(SpigotCommand self, CommandSender sender, Args args) {
-        getSetInt(
+        getSetFloat(
                 (AttribManager) self.manager,
                 (Player) sender,
                 args, "ManaAttack",
@@ -226,7 +226,7 @@ public final class CommandCSI {
 
     @Sub(perm = "admin", onlyPlayer = true, usage = "/csi dodgex x")
     public static void dodgex(SpigotCommand self, CommandSender sender, Args args) {
-        getSetDouble(
+        getSetFloat(
                 (AttribManager) self.manager,
                 (Player) sender,
                 args, "DodgeX",
@@ -238,7 +238,7 @@ public final class CommandCSI {
 
     @Sub(perm = "admin", onlyPlayer = true, usage = "/csi dodgez z")
     public static void dodgez(SpigotCommand self, CommandSender sender, Args args) {
-        getSetDouble(
+        getSetFloat(
                 (AttribManager) self.manager,
                 (Player) sender,
                 args, "DodgeZ",

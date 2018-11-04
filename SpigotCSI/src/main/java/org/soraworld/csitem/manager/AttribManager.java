@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.data.ItemAttrib;
+import org.soraworld.csitem.data.LvlConfig;
 import org.soraworld.csitem.nms.NBTUtil;
 import org.soraworld.hocon.node.Setting;
 import org.soraworld.violet.manager.SpigotManager;
@@ -14,6 +15,8 @@ import org.soraworld.violet.plugin.SpigotPlugin;
 import org.soraworld.violet.util.ChatColor;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.soraworld.csitem.manager.CSIManager.getGlobal;
 import static org.soraworld.csitem.manager.CSIManager.hasGlobal;
@@ -25,6 +28,10 @@ public class AttribManager extends SpigotManager {
     private boolean firstGlobal = true;
     @Setting(comment = "comment.updateTicks")
     private int updateTicks = 10;
+    @Setting(comment = "comment.levels")
+    private final HashMap<Integer, LvlConfig> levels = new HashMap<>();
+    @Setting(comment = "comment.stubborns")
+    private final HashMap<String, ArrayList<String>> stubborns = new HashMap<>();
 
     private final CSIManager csi;
 
@@ -118,15 +125,15 @@ public class AttribManager extends SpigotManager {
         tag.setInt("level", attrib.level);
         tag.setInt("points", attrib.points);
         tag.setString("name", attrib.name);
-        tag.setInt("attack", attrib.attack);
-        tag.setInt("manaAttack", attrib.manaAttack);
+        tag.setFloat("attack", attrib.attack);
+        tag.setFloat("manaAttack", attrib.manaAttack);
         tag.setFloat("critChance", attrib.critChance);
         tag.setFloat("critDamage", attrib.critDamage);
         tag.setFloat("walkspeed", attrib.walkspeed);
         tag.setFloat("blockChance", attrib.blockChance);
         tag.setFloat("dodgeChance", attrib.dodgeChance);
-        tag.setDouble("dodgeX", ((ItemAttrib) attrib).dodgeX);
-        tag.setDouble("dodgeX", ((ItemAttrib) attrib).dodgeZ);
+        tag.setFloat("dodgeX", ((ItemAttrib) attrib).dodgeX);
+        tag.setFloat("dodgeX", ((ItemAttrib) attrib).dodgeZ);
         tag.setFloat("suckRatio", attrib.suckRatio);
         tag.setFloat("fireChance", attrib.fireChance);
         tag.setFloat("freezeChance", attrib.freezeChance);
@@ -139,15 +146,15 @@ public class AttribManager extends SpigotManager {
         attrib.level = tag.getInt("level");
         attrib.points = tag.getInt("points");
         attrib.name = tag.getString("name");
-        attrib.attack = tag.getInt("attack");
-        attrib.manaAttack = tag.getInt("manaAttack");
+        attrib.attack = tag.getFloat("attack");
+        attrib.manaAttack = tag.getFloat("manaAttack");
         attrib.critChance = tag.getFloat("critChance");
         attrib.critDamage = tag.getFloat("critDamage");
         attrib.walkspeed = tag.getFloat("walkspeed");
         attrib.blockChance = tag.getFloat("blockChance");
         attrib.dodgeChance = tag.getFloat("dodgeChance");
-        attrib.dodgeX = tag.getDouble("dodgeX");
-        attrib.dodgeZ = tag.getDouble("dodgeZ");
+        attrib.dodgeX = tag.getFloat("dodgeX");
+        attrib.dodgeZ = tag.getFloat("dodgeZ");
         attrib.suckRatio = tag.getFloat("suckRatio");
         attrib.fireChance = tag.getFloat("fireChance");
         attrib.freezeChance = tag.getFloat("freezeChance");
@@ -157,5 +164,22 @@ public class AttribManager extends SpigotManager {
 
     public boolean shouldGlobal(ItemAttrib item) {
         return item.globalId > 0 && hasGlobal(item.globalId) && firstGlobal;
+    }
+
+    public void activeItem(Attrib item) {
+        if (!item.isActive()) {
+            // TODO active
+            int[] split = item.splitPoints();
+            item.attack = split[0] * getLevel(item.level).attack;
+            item.critChance = split[0] * getLevel(item.level).critChance;
+            item.critChance = split[0] * getLevel(item.level).critChance;
+            item.critChance = split[0] * getLevel(item.level).critChance;
+            item.critChance = split[0] * getLevel(item.level).critChance;
+            item.setActive(true);
+        }
+    }
+
+    private LvlConfig getLevel(int level) {
+        return levels.computeIfAbsent(level, i -> new LvlConfig());
     }
 }

@@ -8,14 +8,6 @@ public class ItemAttrib extends Attrib {
         return false;
     }
 
-    public void active() {
-        if (!isActive()) {
-            // TODO active
-
-            setActive(true);
-        }
-    }
-
     public Attrib getGlobal() {
         return CSIManager.getGlobal(globalId);
     }
