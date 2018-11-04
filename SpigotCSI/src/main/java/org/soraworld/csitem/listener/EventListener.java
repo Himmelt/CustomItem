@@ -16,11 +16,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.soraworld.csitem.data.Attrib;
-import org.soraworld.csitem.data.ItemAttrib;
 import org.soraworld.csitem.data.PlayerAttrib;
 import org.soraworld.csitem.manager.AttribManager;
 
+import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 
 import static org.soraworld.csitem.manager.AttribManager.offerAttrib;
 
@@ -28,6 +29,8 @@ public class EventListener implements Listener {
 
     private final AttribManager manager;
     private static Random random = new Random(System.currentTimeMillis());
+    private static final HashMap<UUID, Long> lastBlock = new HashMap<>();
+    private static final HashMap<UUID, Long> lastDodge = new HashMap<>();
 
     public EventListener(AttribManager manager) {
         this.manager = manager;
@@ -76,18 +79,15 @@ public class EventListener implements Listener {
         if (target instanceof Player) {
             Player victim = (Player) target;
             PlayerAttrib attrib = getPlayerAttrib(victim);
-            if (attrib.dodgeChance > 0 && attrib.dodgeChance > random.nextFloat()) {
-                // TODO check & need cancel event ?
-                //victim.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 80, 2, true, false), true);
-                // TODO update lastDodge
+            if (dodgeCool(victim.getUniqueId()) && attrib.dodgeChance > 0 && attrib.dodgeChance > random.nextFloat()) {
+                lastDodge.put(victim.getUniqueId(), System.currentTimeMillis());
                 victim.setVelocity(dodgeVec(attrib, victim));
                 event.setDamage(0.0D);
                 return;
             }
-            if (attrib.blockChance > 0 && attrib.blockChance > random.nextFloat()) {
-                // TODO check & need cancel event ?
+            if (blockCool(victim.getUniqueId()) && attrib.blockChance > 0 && attrib.blockChance > random.nextFloat()) {
+                lastBlock.put(victim.getUniqueId(), System.currentTimeMillis());
                 victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 1, true));
-                // TODO update lastBlock
                 event.setDamage(0.0D);
                 return;
             }
@@ -123,8 +123,16 @@ public class EventListener implements Listener {
         return pa;
     }
 
-    private static Vector dodgeVec(ItemAttrib item, Player player) {
+    private static Vector dodgeVec(Attrib item, Player player) {
         Vector d = player.getLocation().getDirection().normalize();
         return new Vector(item.dodgeX * d.getX() + item.dodgeZ * d.getZ(), 0, item.dodgeX * d.getZ() - item.dodgeZ * d.getX());
+    }
+
+    private static boolean blockCool(UUID uuid) {
+        return System.currentTimeMillis() - lastBlock.computeIfAbsent(uuid, u -> 0L) > 7000;
+    }
+
+    private static boolean dodgeCool(UUID uuid) {
+        return System.currentTimeMillis() - lastDodge.computeIfAbsent(uuid, u -> 0L) > 5000;
     }
 }

@@ -131,9 +131,6 @@ public class AttribManager extends SpigotManager {
         tag.setFloat("fireChance", attrib.fireChance);
         tag.setFloat("freezeChance", attrib.freezeChance);
         tag.setFloat("blockChance", attrib.blockChance);
-        // TODO
-        //tag.setLong("lastBlock", ((ItemAttrib) attrib).lastBlock);
-        //tag.setLong("lastDodge", ((ItemAttrib) attrib).lastDodge);
     }
 
     private static ItemAttrib nbt2attrib(NBTTagCompound tag, ItemAttrib attrib) {
@@ -148,9 +145,7 @@ public class AttribManager extends SpigotManager {
         attrib.critDamage = tag.getFloat("critDamage");
         attrib.walkspeed = tag.getFloat("walkspeed");
         attrib.blockChance = tag.getFloat("blockChance");
-        attrib.lastBlock = tag.getLong("lastBlock");
         attrib.dodgeChance = tag.getFloat("dodgeChance");
-        attrib.lastDodge = tag.getLong("lastDodge");
         attrib.dodgeX = tag.getDouble("dodgeX");
         attrib.dodgeZ = tag.getDouble("dodgeZ");
         attrib.suckRatio = tag.getFloat("suckRatio");

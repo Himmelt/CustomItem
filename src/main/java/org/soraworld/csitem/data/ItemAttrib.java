@@ -4,9 +4,6 @@ import org.soraworld.csitem.manager.CSIManager;
 
 public class ItemAttrib extends Attrib {
 
-    public long lastBlock = 0;
-    public long lastDodge = 0;
-
     public boolean isGlobal() {
         return false;
     }
