@@ -65,56 +65,65 @@ public class CSIManager {
         }
     }
 
-    public static boolean hasAttrib(int id) {
+    public static boolean hasGlobal(int id) {
         return items.containsKey(id);
     }
 
-    public static boolean hasAttrib(String name) {
+    public static boolean hasGlobal(String name) {
         return names.containsKey(name) && items.containsKey(names.get(name));
     }
 
-    public static Attrib getGlobalAttrib(int globalId) {
-        return items.get(globalId);
+    public static Attrib getGlobal(int id) {
+        return items.get(id);
     }
 
-    public static Attrib getGlobalAttrib(String name) {
+    public static Attrib getGlobal(String name) {
         return items.get(names.getOrDefault(name, -1));
     }
 
-    public static Attrib getOrCreate(int id) {
+/*
+    public static Attrib getCreateGlobal(int id) {
         if (id <= 0) return null;
         return items.computeIfAbsent(id, Attrib::new);
     }
 
-    public static Attrib getOrCreate(int id, String name) {
+    public static Attrib getCreateGlobal(String name) {
+        return getCreateGlobal(names.computeIfAbsent(name, s -> NEXT_ID++), name);
+    }
+
+    private static Attrib getCreateGlobal(int id, String name) {
         if (id <= 0) return null;
-        return items.computeIfAbsent(id, integer -> new Attrib(integer, name));
+        return items.computeIfAbsent(id, i -> new Attrib(i, name));
     }
+*/
 
-    public static boolean createAttrib(int id) {
+    public static boolean createGlobal(int id) {
         if (id <= 0) return false;
-        return createAttrib(id, "");
+        return createGlobal(id, null);
     }
 
-    public static boolean createAttrib(int id, String name) {
+    /**
+     * 根据名字创建全局物品.
+     *
+     * @param name 名称 非空
+     * @return 是否成功
+     */
+    public static boolean createGlobal(String name) {
+        //if (name == null || name.isEmpty()) return false;
+        if (!names.containsKey(name)) {
+            names.put(name, NEXT_ID);
+            return createGlobal(NEXT_ID++, name);
+        }
+        return createGlobal(names.get(name), name);
+    }
+
+    private static boolean createGlobal(int id, String name) {
         if (id <= 0) return false;
         if (!items.containsKey(id)) {
             items.put(id, new Attrib(id, name));
             return true;
         }
         return false;
-    }
-
-    public static Attrib getOrCreate(String name) {
-        return getOrCreate(names.computeIfAbsent(name, s -> NEXT_ID++), name);
-    }
-
-    public static boolean createAttrib(String name) {
-        if (!names.containsKey(name)) {
-            names.put(name, NEXT_ID);
-            return createAttrib(NEXT_ID++, name);
-        }
-        return createAttrib(names.get(name), name);
     }
 
     public static boolean removeAttrib(int id) {

@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.manager.AttribManager;
-import org.soraworld.csitem.nms.NBTUtil;
 import org.soraworld.violet.command.Args;
 import org.soraworld.violet.command.SpigotCommand;
 import org.soraworld.violet.command.Sub;
@@ -15,10 +14,9 @@ import org.soraworld.violet.command.Sub;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import static org.soraworld.csitem.manager.AttribManager.*;
 import static org.soraworld.csitem.manager.CSIManager.*;
 import static org.soraworld.csitem.nms.ItemUtil.createItemStack;
-import static org.soraworld.csitem.nms.NBTUtil.getOrCreateAttrib;
-import static org.soraworld.csitem.nms.NBTUtil.offerAttrib;
 
 public final class CommandCSI {
 
@@ -45,10 +43,10 @@ public final class CommandCSI {
             String first = args.first();
             if (first.matches("\\d+")) {
                 int id = Integer.valueOf(first);
-                if (hasAttrib(id)) {
+                if (hasGlobal(id)) {
                     manager.showAttribInfo(sender, id);
                 } else manager.sendKey(sender, "global.idNotExist");
-            } else if (hasAttrib(first)) {
+            } else if (hasGlobal(first)) {
                 manager.showAttribInfo(sender, first);
             } else manager.sendKey(sender, "global.idNotExist");
         } else manager.sendKey(sender, "emptyArgs");
@@ -60,11 +58,11 @@ public final class CommandCSI {
         if (args.notEmpty()) {
             String first = args.first();
             if (first.matches("\\d+")) {
-                if (createAttrib(Integer.valueOf(first))) {
+                if (createGlobal(Integer.valueOf(first))) {
                     manager.saveItems();
                     manager.sendKey(sender, "global.createSuccess");
                 } else manager.sendKey(sender, "global.alreadyExist");
-            } else if (createAttrib(first)) {
+            } else if (createGlobal(first)) {
                 manager.saveItems();
                 manager.sendKey(sender, "global.createSuccess");
             } else manager.sendKey(sender, "global.alreadyExist");
@@ -102,7 +100,7 @@ public final class CommandCSI {
             Player player = Bukkit.getPlayer(target);
             if (player != null) {
                 String attribId = args.get(1);
-                Attrib attrib = attribId.matches("\\d+") ? getGlobalAttrib(Integer.valueOf(attribId)) : getGlobalAttrib(attribId);
+                Attrib attrib = attribId.matches("\\d+") ? getGlobal(Integer.valueOf(attribId)) : getGlobal(attribId);
                 if (attrib != null) {
                     String itemId = args.get(2);
                     int amount = 0, damage = 0;
@@ -324,7 +322,7 @@ public final class CommandCSI {
                     return;
                 }
                 if (attrib.globalId > 0) {
-                    Attrib global = getGlobalAttrib(attrib.globalId);
+                    Attrib global = getGlobal(attrib.globalId);
                     if (global != null) {
                         try {
                             int value = Integer.valueOf(args.first());
@@ -349,10 +347,10 @@ public final class CommandCSI {
                     manager.sendKey(player, "invalidInt");
                 }
             } else {
-                Attrib attrib = NBTUtil.getAttrib(stack);
+                Attrib attrib = getAttrib(stack);
                 if (attrib != null) {
                     if (attrib.globalId > 0) {
-                        Attrib global = getGlobalAttrib(attrib.globalId);
+                        Attrib global = getGlobal(attrib.globalId);
                         if (global != null) {
                             manager.sendKey(player, "global.get" + Name, fun.apply(global));
                         } else manager.sendKey(player, "global.idNotExist");
@@ -368,7 +366,7 @@ public final class CommandCSI {
             if (args.notEmpty()) {
                 Attrib attrib = getOrCreateAttrib(stack);
                 if (attrib.globalId > 0) {
-                    Attrib global = getGlobalAttrib(attrib.globalId);
+                    Attrib global = getGlobal(attrib.globalId);
                     if (global != null) {
                         try {
                             float value = Float.valueOf(args.first());
@@ -393,10 +391,10 @@ public final class CommandCSI {
                     }
                 }
             } else {
-                Attrib attrib = NBTUtil.getAttrib(stack);
+                Attrib attrib = getAttrib(stack);
                 if (attrib != null) {
                     if (attrib.globalId > 0) {
-                        Attrib global = getGlobalAttrib(attrib.globalId);
+                        Attrib global = getGlobal(attrib.globalId);
                         if (global != null) {
                             manager.sendKey(player, "global.get" + Name, fun.apply(global));
                         } else manager.sendKey(player, "global.idNotExist");
@@ -413,7 +411,7 @@ public final class CommandCSI {
             if (args.notEmpty()) {
                 Attrib attrib = getOrCreateAttrib(stack);
                 if (attrib.globalId > 0) {
-                    Attrib global = getGlobalAttrib(attrib.globalId);
+                    Attrib global = getGlobal(attrib.globalId);
                     if (global != null) {
                         try {
                             double value = Double.valueOf(args.first());
@@ -438,10 +436,10 @@ public final class CommandCSI {
                     }
                 }
             } else {
-                Attrib attrib = NBTUtil.getAttrib(stack);
+                Attrib attrib = getAttrib(stack);
                 if (attrib != null) {
                     if (attrib.globalId > 0) {
-                        Attrib global = getGlobalAttrib(attrib.globalId);
+                        Attrib global = getGlobal(attrib.globalId);
                         if (global != null) {
                             manager.sendKey(player, "global.get" + Name, fun.apply(global));
                         } else manager.sendKey(player, "global.idNotExist");

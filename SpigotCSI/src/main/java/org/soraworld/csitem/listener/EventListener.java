@@ -23,12 +23,12 @@ import org.bukkit.util.Vector;
 import org.soraworld.csitem.data.Attrib;
 import org.soraworld.csitem.data.PlayerAttrib;
 import org.soraworld.csitem.manager.AttribManager;
+import org.soraworld.csitem.manager.CSIManager;
 
 import java.util.Random;
 
-import static org.soraworld.csitem.manager.CSIManager.getGlobalAttrib;
-import static org.soraworld.csitem.nms.NBTUtil.getAttrib;
-import static org.soraworld.csitem.nms.NBTUtil.offerAttrib;
+import static org.soraworld.csitem.manager.AttribManager.getAttrib;
+import static org.soraworld.csitem.manager.AttribManager.offerAttrib;
 
 public class EventListener implements Listener {
 
@@ -72,7 +72,7 @@ public class EventListener implements Listener {
             ItemStack stack = attacker.getInventory().getItemInMainHand();
             if (stack != null && stack.getType() != Material.AIR) {
                 Attrib attrib = getAttrib(stack);
-                if (attrib != null && attrib.globalId > 0) attrib = getGlobalAttrib(attrib.globalId);
+                if (attrib != null && attrib.globalId > 0) attrib = CSIManager.getGlobal(attrib.globalId);
                 if (attrib != null) {
                     if (attrib.critChance > 0 && attrib.critChance > random.nextFloat()) {
                         damage += attrib.critDamage;
@@ -145,7 +145,7 @@ public class EventListener implements Listener {
             else stack = inv.getBoots();
             if (stack != null && stack.getType() != Material.AIR) {
                 Attrib attrib = getAttrib(stack);
-                if (attrib != null && attrib.globalId > 0) attrib = getGlobalAttrib(attrib.globalId);
+                if (attrib != null && attrib.globalId > 0) attrib = CSIManager.getGlobal(attrib.globalId);
                 if (attrib != null) pa.append(attrib);
             }
         }

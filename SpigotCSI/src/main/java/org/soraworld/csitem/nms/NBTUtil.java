@@ -3,7 +3,6 @@ package org.soraworld.csitem.nms;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
-import org.soraworld.csitem.data.Attrib;
 
 import java.lang.reflect.Field;
 
@@ -86,74 +85,6 @@ public class NBTUtil {
         } catch (Throwable e) {
             e.printStackTrace();
             return new NBTTagCompound();
-        }
-    }
-
-    public static Attrib getOrCreateAttrib(org.bukkit.inventory.ItemStack stack) {
-        NBTTagCompound tag = getOrCreateTag(stack, "attrib");
-        Attrib attrib = new Attrib();
-        attrib.globalId = tag.getInt("globalId");
-        nbt2attrib(tag, attrib);
-        return attrib;
-    }
-
-    public static Attrib getAttrib(org.bukkit.inventory.ItemStack stack) {
-        NBTTagCompound tag = getTag(stack, "attrib");
-        if (tag == null) return null;
-        Attrib attrib = new Attrib();
-        attrib.globalId = tag.getInt("globalId");
-        nbt2attrib(tag, attrib);
-        return attrib;
-    }
-
-    public static void offerAttrib(org.bukkit.inventory.ItemStack stack, final Attrib attrib) {
-        NBTTagCompound tag = getOrCreateTag(stack, "attrib");
-        tag.setInt("globalId", attrib.globalId);
-        if (attrib.globalId <= 0) {
-            tag.setInt("globalId", attrib.globalId);
-            tag.setBoolean("active", attrib.isActive());
-            tag.setInt("level", attrib.level);
-            tag.setInt("points", attrib.points);
-            tag.setString("name", attrib.name);
-            tag.setInt("attack", attrib.attack);
-            tag.setInt("manaAttack", attrib.manaAttack);
-            tag.setFloat("critChance", attrib.critChance);
-            tag.setFloat("critDamage", attrib.critDamage);
-            tag.setFloat("walkspeed", attrib.walkspeed);
-            tag.setFloat("blockChance", attrib.blockChance);
-            tag.setLong("lastBlock", attrib.lastBlock);
-            tag.setFloat("dodgeChance", attrib.dodgeChance);
-            tag.setLong("lastDodge", attrib.lastDodge);
-            tag.setDouble("dodgeX", attrib.dodgeX);
-            tag.setDouble("dodgeX", attrib.dodgeZ);
-            tag.setFloat("suckRatio", attrib.suckRatio);
-            tag.setFloat("fireChance", attrib.fireChance);
-            tag.setFloat("freezeChance", attrib.freezeChance);
-            tag.setFloat("blockChance", attrib.blockChance);
-        }
-    }
-
-    private static void nbt2attrib(NBTTagCompound tag, Attrib attrib) {
-        if (attrib.globalId <= 0) {
-            attrib.setActive(tag.getBoolean("active"));
-            attrib.level = tag.getInt("level");
-            attrib.points = tag.getInt("points");
-            attrib.name = tag.getString("name");
-            attrib.attack = tag.getInt("attack");
-            attrib.manaAttack = tag.getInt("manaAttack");
-            attrib.critChance = tag.getFloat("critChance");
-            attrib.critDamage = tag.getFloat("critDamage");
-            attrib.walkspeed = tag.getFloat("walkspeed");
-            attrib.blockChance = tag.getFloat("blockChance");
-            attrib.lastBlock = tag.getLong("lastBlock");
-            attrib.dodgeChance = tag.getFloat("dodgeChance");
-            attrib.lastDodge = tag.getLong("lastDodge");
-            attrib.dodgeX = tag.getDouble("dodgeX");
-            attrib.dodgeZ = tag.getDouble("dodgeZ");
-            attrib.suckRatio = tag.getFloat("suckRatio");
-            attrib.fireChance = tag.getFloat("fireChance");
-            attrib.freezeChance = tag.getFloat("freezeChance");
-            attrib.blockChance = tag.getFloat("blockChance");
         }
     }
 }

@@ -41,10 +41,10 @@ public final class CommandCSI {
             String first = args.first();
             if (first.matches("\\d+")) {
                 int id = Integer.valueOf(first);
-                if (hasAttrib(id)) {
+                if (hasGlobal(id)) {
                     manager.showAttribInfo(sender, id);
                 } else manager.sendKey(sender, "global.idNotExist");
-            } else if (hasAttrib(first)) {
+            } else if (hasGlobal(first)) {
                 manager.showAttribInfo(sender, first);
             } else manager.sendKey(sender, "global.idNotExist");
         } else manager.sendKey(sender, "emptyArgs");
@@ -56,11 +56,11 @@ public final class CommandCSI {
         if (args.notEmpty()) {
             String first = args.first();
             if (first.matches("\\d+")) {
-                if (createAttrib(Integer.valueOf(first))) {
+                if (createGlobal(Integer.valueOf(first))) {
                     manager.saveItems();
                     manager.sendKey(sender, "global.createSuccess");
                 } else manager.sendKey(sender, "global.alreadyExist");
-            } else if (createAttrib(first)) {
+            } else if (createGlobal(first)) {
                 manager.saveItems();
                 manager.sendKey(sender, "global.createSuccess");
             } else manager.sendKey(sender, "global.alreadyExist");
@@ -249,7 +249,7 @@ public final class CommandCSI {
                             return;
                         }
                         if (attrib.globalId > 0) {
-                            Attrib global = getGlobalAttrib(attrib.globalId);
+                            Attrib global = getGlobal(attrib.globalId);
                             if (global != null) {
                                 try {
                                     int value = Integer.valueOf(args.first());
@@ -277,7 +277,7 @@ public final class CommandCSI {
                 } else {
                     stack.get(ItemAttrib.class).ifPresent(attrib -> {
                         if (attrib.globalId > 0) {
-                            Attrib global = getGlobalAttrib(attrib.globalId);
+                            Attrib global = getGlobal(attrib.globalId);
                             if (global != null) {
                                 manager.sendKey(player, "global.get" + Name, fun.apply(global));
                             } else manager.sendKey(player, "idNotExist");
@@ -295,7 +295,7 @@ public final class CommandCSI {
                 if (args.notEmpty()) {
                     stack.getOrCreate(ItemAttrib.class).ifPresent(attrib -> {
                         if (attrib.globalId > 0) {
-                            Attrib global = getGlobalAttrib(attrib.globalId);
+                            Attrib global = getGlobal(attrib.globalId);
                             if (global != null) {
                                 try {
                                     float value = Float.valueOf(args.first());
@@ -323,7 +323,7 @@ public final class CommandCSI {
                 } else {
                     stack.get(ItemAttrib.class).ifPresent(attrib -> {
                         if (attrib.globalId > 0) {
-                            Attrib global = getGlobalAttrib(attrib.globalId);
+                            Attrib global = getGlobal(attrib.globalId);
                             if (global != null) {
                                 manager.sendKey(player, "global.get" + Name, fun.apply(global));
                             } else manager.sendKey(player, "idNotExist");

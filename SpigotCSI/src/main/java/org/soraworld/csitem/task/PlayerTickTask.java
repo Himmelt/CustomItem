@@ -6,13 +6,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.soraworld.csitem.data.Attrib;
+import org.soraworld.csitem.manager.CSIManager;
 import org.soraworld.violet.plugin.SpigotPlugin;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-import static org.soraworld.csitem.manager.CSIManager.getGlobalAttrib;
-import static org.soraworld.csitem.nms.NBTUtil.getAttrib;
+import static org.soraworld.csitem.manager.AttribManager.getAttrib;
 import static org.soraworld.violet.nms.Version.v1_12_R1;
 
 public class PlayerTickTask implements Runnable {
@@ -79,7 +79,7 @@ public class PlayerTickTask implements Runnable {
         // TODO 提取属性
         if (stack != null && stack.getType() != Material.AIR) {
             Attrib attrib = getAttrib(stack);
-            if (attrib != null && attrib.globalId > 0) attrib = getGlobalAttrib(attrib.globalId);
+            if (attrib != null && attrib.globalId > 0) attrib = CSIManager.getGlobal(attrib.globalId);
             if (attrib != null && (attrib.globalId > 0 || attrib.isActive())) state.append(attrib);
         }
     }
