@@ -6,12 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.ItemMergeEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -50,10 +44,6 @@ public class EventListener implements Listener {
                 manager.sendKey(player, "itemActivated");
             }
         }
-    }
-
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
     }
 
     @EventHandler
@@ -105,26 +95,6 @@ public class EventListener implements Listener {
         manager.createPlayerTask(event.getPlayer());
     }
 
-    @EventHandler
-    public void onDropItem(PlayerDropItemEvent event) {
-    }
-
-    @EventHandler
-    public void onDestroyChest(EntityPickupItemEvent event) {
-    }
-
-    @EventHandler
-    public void onDestroyChest(InventoryPickupItemEvent event) {
-    }
-
-    @EventHandler
-    public void onItemSpawnEvent(ItemSpawnEvent event) {
-    }
-
-    @EventHandler
-    public void onItemMergeEvent(ItemMergeEvent event) {
-    }
-
     private PlayerAttrib getPlayerAttrib(Player player) {
         PlayerAttrib pa = new PlayerAttrib();
         PlayerInventory inv = player.getInventory();
@@ -143,9 +113,8 @@ public class EventListener implements Listener {
         return pa;
     }
 
-    private static Vector dodgeVec(ItemAttrib attrib, Player player) {
+    private static Vector dodgeVec(ItemAttrib item, Player player) {
         Vector d = player.getLocation().getDirection().normalize();
-        return new Vector(attrib.dodgeX * d.getX() + attrib.dodgeZ * d.getZ(), 0,
-                attrib.dodgeX * d.getZ() - attrib.dodgeZ * d.getX());
+        return new Vector(item.dodgeX * d.getX() + item.dodgeZ * d.getZ(), 0, item.dodgeX * d.getZ() - item.dodgeZ * d.getX());
     }
 }

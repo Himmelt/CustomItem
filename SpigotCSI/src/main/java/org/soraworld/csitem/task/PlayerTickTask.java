@@ -11,6 +11,7 @@ import org.soraworld.csitem.manager.AttribManager;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static org.soraworld.csitem.manager.AttribManager.offerAttrib;
 import static org.soraworld.violet.nms.Version.v1_12_R1;
 
 public class PlayerTickTask implements Runnable {
@@ -78,7 +79,14 @@ public class PlayerTickTask implements Runnable {
     private void fetchState(ItemStack stack, State state) {
         if (stack != null && stack.getType() != Material.AIR) {
             Attrib attrib = manager.getAttrib(stack);
-            if (attrib != null) state.append(attrib);
+            if (attrib != null) {
+                if (!attrib.isGlobal() && !attrib.isActive()) {
+                    attrib.active();
+                    offerAttrib(stack, attrib);
+                    manager.sendKey(player, "itemActivated");
+                }
+                state.append(attrib);
+            }
         }
     }
 
