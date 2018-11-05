@@ -184,4 +184,45 @@ public class Attrib {
         }
         return array;
     }
+
+    public void apply(String name, int time) {
+        switch (name) {
+            case "attack":
+                attack *= time;
+                break;
+            case "manaAttack":
+                manaAttack *= time;
+                break;
+            case "critChance":
+                critChance *= time;
+                break;
+            case "critDamage":
+                critDamage *= time;
+                break;
+            case "walkspeed":
+                walkspeed *= time;
+                break;
+            case "blockChance":
+                blockChance *= time;
+                break;
+            case "dodgeChance":
+                dodgeChance *= time;
+                break;
+            case "suckRatio":
+                suckRatio *= time;
+                break;
+            case "fireChance":
+                fireChance *= time;
+                break;
+            case "freezeChance":
+                freezeChance *= time;
+                break;
+            case "poisonChance":
+                poisonChance *= time;
+                break;
+            case "bloodChance":
+                bloodChance *= time;
+                break;
+        }
+    }
 }

@@ -17,6 +17,7 @@ import org.soraworld.violet.util.ChatColor;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.soraworld.csitem.manager.CSIManager.getGlobal;
 import static org.soraworld.csitem.manager.CSIManager.hasGlobal;
@@ -137,7 +138,8 @@ public class AttribManager extends SpigotManager {
         tag.setFloat("suckRatio", attrib.suckRatio);
         tag.setFloat("fireChance", attrib.fireChance);
         tag.setFloat("freezeChance", attrib.freezeChance);
-        tag.setFloat("blockChance", attrib.blockChance);
+        tag.setFloat("poisonChance", attrib.poisonChance);
+        tag.setFloat("bloodChance", attrib.bloodChance);
     }
 
     private static ItemAttrib nbt2attrib(NBTTagCompound tag, ItemAttrib attrib) {
@@ -158,7 +160,8 @@ public class AttribManager extends SpigotManager {
         attrib.suckRatio = tag.getFloat("suckRatio");
         attrib.fireChance = tag.getFloat("fireChance");
         attrib.freezeChance = tag.getFloat("freezeChance");
-        attrib.blockChance = tag.getFloat("blockChance");
+        attrib.poisonChance = tag.getFloat("poisonChance");
+        attrib.bloodChance = tag.getFloat("bloodChance");
         return attrib;
     }
 
@@ -168,15 +171,32 @@ public class AttribManager extends SpigotManager {
 
     public void activeItem(Attrib item) {
         if (!item.isActive()) {
-            // TODO active
             int[] split = item.splitPoints();
-            item.attack = split[0] * getLevel(item.level).attack;
-            item.critChance = split[0] * getLevel(item.level).critChance;
-            item.critChance = split[0] * getLevel(item.level).critChance;
-            item.critChance = split[0] * getLevel(item.level).critChance;
-            item.critChance = split[0] * getLevel(item.level).critChance;
+            LvlConfig lvl = getLevel(item.level);
+            item.attack = split[0] * lvl.attack;
+            item.manaAttack = split[1] * lvl.manaAttack;
+            item.critChance = split[2] * lvl.critChance;
+            item.critDamage = split[3] * lvl.critDamage;
+            item.walkspeed = split[4] * lvl.walkspeed;
+            item.blockChance = split[5] * lvl.blockChance;
+            item.dodgeChance = split[6] * lvl.dodgeChance;
+            item.suckRatio = split[7] * lvl.suckRatio;
+            item.fireChance = split[8] * lvl.fireChance;
+            item.freezeChance = split[9] * lvl.freezeChance;
+            item.poisonChance = split[10] * lvl.poisonChance;
+            item.bloodChance = split[11] * lvl.bloodChance;
+
+            applyStubborn(item);
+
             item.setActive(true);
         }
+    }
+
+    private void applyStubborn(Attrib item) {
+        item.stubborns.forEach(s -> {
+            List<String> list = this.stubborns.get(s.name);
+            if (list != null) list.forEach(name -> item.apply(name, s.time));
+        });
     }
 
     private LvlConfig getLevel(int level) {

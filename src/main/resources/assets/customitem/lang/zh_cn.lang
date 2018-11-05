@@ -81,4 +81,6 @@ list {
 comment {
   firstGlobal = "当全局属性存在时, 优先使用全局属性."
   updateTicks = "玩家属性刷新周期 (tick, 20tick/秒)"
+  levels = "随机属性等级 每点分配值"
+  stubborns = "偏执配置 键为 偏执名，值是对应增益的属性列表, 可用属性见说明."
 }

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -100,6 +101,14 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerRegain(EntityRegainHealthEvent event) {
+        UUID uuid = event.getEntity().getUniqueId();
+        if (PlayerTickTask.times.getOrDefault(uuid, 0) > 0) {
+            event.setAmount(event.getAmount() * 0.7);
+        }
+    }
+
+    @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
         manager.createPlayerTask(event.getPlayer());
     }
@@ -109,6 +118,8 @@ public class EventListener implements Listener {
         UUID uuid = event.getPlayer().getUniqueId();
         lastBlock.remove(uuid);
         lastDodge.remove(uuid);
+        PlayerTickTask.times.clear();
+        PlayerTickTask.bloods.clear();
     }
 
     @EventHandler
